@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import Link from 'next/link'
 import PropTypes from 'prop-types'
 
+// import { initalState } from '../reducers/index'
+import { useSelector } from 'react-redux'
+
 import styles from "./Layout.module.css"
-import UserProfile from './userProfile.js'
-import LoginForm from './loginForm.js'
+import UserProfile from './UserProfile.js'
+import LoginForm from './Loginform.js'
+
+
 
 const Layout = ({ children }) => {
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-
-
+    const isLoggedIn = useSelector(state => state.user.isLoggedIn)
+    
     return (
         <div>
             <div>
@@ -28,7 +32,7 @@ const Layout = ({ children }) => {
                     {children}
                 </div>
                 <div>
-                    {isLoggedIn ? <UserProfile setIsLoggedIn={setIsLoggedIn} /> : <LoginForm setIsLoggedIn={setIsLoggedIn} />}
+                    {isLoggedIn ? <UserProfile /> : <LoginForm />}
                 </div>
             </div>
             
@@ -37,9 +41,9 @@ const Layout = ({ children }) => {
 };
 
 
-Layout.propTypes = {
-    children: PropTypes.node.isRequired,   
-}
+// Layout.propTypes = {
+//     children: PropTypes.node.isRequired,   
+// }
 
 
 export default Layout;

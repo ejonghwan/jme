@@ -1,10 +1,17 @@
 import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux'
+import { login_action, logout_action }from '../reducers/user.js'
+
+
 
 const UserProfile = ({ setIsLoggedIn }) => {
 
+    const dispatch = useDispatch()
+
     const handleLogout = useCallback(e => {
         e.preventDefault();
-        setIsLoggedIn(false)
+        // setIsLoggedIn(false)
+        dispatch(logout_action())
     }, [])
 
     return (

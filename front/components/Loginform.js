@@ -1,7 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import Link from 'next/link'
 
-const Loginform = ({ setIsLoggedIn }) => {
+import { useDispatch } from 'react-redux'
+import { login_action, logout_action }from '../reducers/user.js'
+
+const Loginform = () => {
+
+    const dispatch = useDispatch()
 
     const [userId, serUserId] = useState('');
     const [userPassword, setUserPassword] = useState('');
@@ -23,7 +28,8 @@ const Loginform = ({ setIsLoggedIn }) => {
 
     const handleSubmit = useCallback(e => {
         e.preventDefault();
-        setIsLoggedIn(true)
+        // setIsLoggedIn(true)
+        dispatch(login_action())
         console.log(userId, userPassword)
 
     }, [userId, userPassword])
