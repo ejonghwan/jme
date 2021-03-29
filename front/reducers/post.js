@@ -2,8 +2,8 @@ export const initialState = {
     mainPosts: [{
         id: 1,
         User: {
-            id: 1,
-            nickname: '서버에서 올 가짜데이터'
+            id: 'jjongrrr',
+            nickname: '종환'
         },
         content: '첫번째 게시글 #해시 #익스',
         Images: [{
@@ -42,10 +42,10 @@ export const addPost = {
 
 export const dummyPost = {
     id: 2,
-    content: 'dummy post',
+    content: '더미데이터입니다',
     User: {
-        id:1,
-        nickname: 'dummy name',
+        id:"jjongrrr",
+        nickname: 'name',
     },
     Images: [],
     Comments: [],
