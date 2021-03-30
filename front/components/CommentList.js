@@ -1,7 +1,7 @@
 import React from 'react';
 
 const CommentList = ({ data }) => {
-    console.log(data)
+    // console.log(data)
     return (
         <div>
             <div>{data.Comments.length}개의 댓글</div>

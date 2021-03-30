@@ -3,13 +3,15 @@ import { useSelector } from 'react-redux'
 import ImageForm from './ImageForm.js'
 import CommentForm from './CommentForm.js'
 import CommentList from './CommentList.js'
+import PostCardContent from './PostCardContent.js'
+
 
 
 const PostCard = ({ data }) => {
     console.log(data.Images[0])
 
     const { me } = useSelector(state => state.user )
-    const id = me && me.id
+    const id = me && me.userId
     
     const [like, setLike] = useState(false)
     const [comment, setComment] = useState(false)
@@ -26,10 +28,10 @@ const PostCard = ({ data }) => {
 
     return (
         <div>
-            {data.Images ? <ImageForm data={data} /> : <div>'이미지 없음'</div>}
+            {data.Images[0] && <ImageForm data={data} />}
             <div>{data.User.nickname[0]}</div>
             <div>{data.User.nickname}</div>
-            <div>{data.content}</div>
+            <div>{<PostCardContent data={data.content}/>}</div>
             <button>리트윗</button>
             {like ? (
                 <button name="like" onClick={handleToggle} style={{color: 'black'}}>좋아요</button>

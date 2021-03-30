@@ -29,7 +29,7 @@ const Loginform = () => {
     const handleSubmit = useCallback(e => {
         e.preventDefault();
         // setIsLoggedIn(true)
-        dispatch(login_action())
+        dispatch(login_action({userId, userPassword}))
         console.log(userId, userPassword)
 
     }, [userId, userPassword])
