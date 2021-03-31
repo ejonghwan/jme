@@ -5,7 +5,7 @@ import Head from 'next/head'
 import wrapper from '../store/configureStore.js'
 
 //saga
-import WidthReduxSaga from 'next-redux-saga'
+import withReduxSaga from 'next-redux-saga'
 
 import "swiper/swiper.scss";
 import 'swiper/components/navigation/navigation.scss';
@@ -30,4 +30,4 @@ App.propTypes = {
 }
 
 
-export default wrapper.withRedux(WidthReduxSaga(App));
+export default wrapper.withRedux(withReduxSaga(App));
