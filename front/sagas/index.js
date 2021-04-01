@@ -1,5 +1,5 @@
 import { all, call, delay, fork, put, take, takeLatest } from 'redux-saga/effects'
-import Axios from 'axios'
+
 import postSaga from './post'
 import userSaga from './user'
 

@@ -1,22 +1,22 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux'
-import { login_action, logout_action }from '../reducers/user.js'
+import { useDispatch, useSelector } from 'react-redux'
+import { login_action, logout_action, logout_request_action}from '../reducers/user.js'
 
 
 
 const UserProfile = ({ setIsLoggedIn }) => {
 
     const dispatch = useDispatch()
-
     const handleLogout = useCallback(e => {
         e.preventDefault();
         // setIsLoggedIn(false)
-        dispatch(logout_action())
+        dispatch(logout_request_action())
     }, [])
 
     return (
         <div>
-            <div>
+           
+                <div>
                 <span>avatar</span><br />
                 <span>userName</span>
             </div>
@@ -26,6 +26,7 @@ const UserProfile = ({ setIsLoggedIn }) => {
                 <li>followers: <span>0</span></li>
             </ul>
             <button onClick={handleLogout}>logout</button>
+             
         </div>
     );
 };

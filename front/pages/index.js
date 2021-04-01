@@ -11,12 +11,17 @@ const index = () => {
 
     const { isLoggedIn } = useSelector(state => state.user)
     const { mainPosts } = useSelector(state => state.post)
+    const { isLoggingIn, isLoggingOut } = useSelector(state => state.user)
 
     return (
         <div>
             <Layout>
                 {isLoggedIn && <PostForm /> }
-                {mainPosts.map(data => <PostCard key={data.id} data={data}/>)}
+                {isLoggingIn || isLoggingOut? (
+                    <div>...loading</div>
+                ) : (
+                    mainPosts.map(data => <PostCard key={data.id} data={data}/>)
+                )}
             </Layout>
         </div>
     );
