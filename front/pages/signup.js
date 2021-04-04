@@ -1,8 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import useInput from '../components/hooks/useInput.js';
 import Layout from '../components/Layout.js'
+import { SIGNUP_REQUEST } from '../reducers/user.js';
 
+import { useDispatch } from 'react-redux'
 const Signup = () => {
+
+    const dispatch = useDispatch()
 
     const [email, handleEmailChange] = useInput('');
     const [nickname, handleNicknameChange] = useInput('');
@@ -25,7 +29,11 @@ const Signup = () => {
 
     const handleSubmit = useCallback(e => {
         e.preventDefault()
-        console.log(email, password, nickname)
+        // console.log(email, password, nickname)
+        dispatch({
+            type: SIGNUP_REQUEST,
+            data: { email, password, nickname }
+        })
     }, [])
 
     // useEffect(() => {
@@ -41,7 +49,7 @@ const Signup = () => {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="email">email</label><br />
-                    <input type="text" onChange={handleEmailChange} value={email} required />
+                    <input type="text" type="email" onChange={handleEmailChange} value={email} required />
                 </div>
                 <div>
                     <label htmlFor="nickname">nickname</label><br />

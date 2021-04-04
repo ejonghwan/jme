@@ -41,6 +41,7 @@ const Loginform = () => {
                 <label htmlFor="user_id">id</label><br />
                 <input 
                     name="user_id" 
+                    type="email"
                     value={userId} 
                     onChange={handleChange} 
                     required 

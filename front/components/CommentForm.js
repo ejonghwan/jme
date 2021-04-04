@@ -1,6 +1,11 @@
 import React, { useCallback, useState } from 'react';
 
+import { useDispatch } from 'react-redux'
+import { ADD_COMMENT_REQUEST } from '../reducers/post';
 const CommentForm = ({ data }) => {
+
+
+    const dispatch = useDispatch()
 
     const [comment, setComment] = useState('')
     const handleComment = useCallback(e => {
@@ -9,8 +14,12 @@ const CommentForm = ({ data }) => {
 
     const handleSubmit = useCallback(e => {
         e.preventDefault()
-        console.log(data.User.id, comment)
-    }, [comment])
+        // console.log(data.User.id, comment)
+        dispatch({
+            type: ADD_COMMENT_REQUEST,
+            data: { content: comment, postId: post.id, userId: id}
+        })
+    }, [comment, id])
 
     return (
         <div>
