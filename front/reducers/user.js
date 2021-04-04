@@ -1,9 +1,13 @@
-
-
- export const initialState = {
-    isLoggingIn: false,
-    isLoggingOut: false,
-    isLoggedIn: false,
+export const initialState = {
+    loginLoading: false,
+    loginDone: false,
+    loginError: null,
+    logoutLoading: false,
+    logoutDone: false,
+    logoutError: null,
+    signupLoading: false,
+    signupDone: false,
+    signupError: null,
     me: null,
     loginData: {},
     signupData: {},
@@ -11,63 +15,119 @@
 }
 
 
+export const LOGIN_REQUEST = "LOGIN_REQUEST"
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS"
+export const LOGIN_FAILURE = "LOGIN_FAILURE"
+
+export const LOGOUT_REQUEST = "LOGIN_FAILURE"
+export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS"
+export const LOGOUT_FAILURE = "LOGOUT_FAILURE"
+
+export const SIGNUP_REQUEST = "SIGNUP_REQUEST"
+export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS"
+export const SiGNUP_FAILURE = "SiGNUP_FAILURE"
+
+export const FOLLOW_REQUEST = "FOLLOW_REQUEST"
+export const FOLLOW_SUCCESS = "FOLLOW_SUCCESS"
+export const FOLLOW_FAILURE = "FOLLOW_FAILURE"
+
+export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST"
+export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS"
+export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE"
+
+
 export const login_request_action = (data) => {
     return {
-        type: "LOGIN_REQUEST",
+        type: LOGIN_REQUEST,
         data: data,
     }    
 }
 
-
 export const logout_request_action = () => {
     return {
-        type: "LOGOUT_REQUEST",
+        type: LOGOUT_REQUEST,
     }
 }
 
-
+const dummyUser = data => ({
+    ...data,
+    nickname: 'jjong',
+    id: 1,
+    Posts: ['asd'],
+    Followings: ['asd'],
+    Followers: []
+})
 
 
 const reducer = (state = initialState, action) => {
     switch(action.type) {
-        case "LOGIN_REQUEST" :
+        case LOGIN_REQUEST :
             return {
                 ...state,
-                isLoggingIn: true,
+                loginLoading: true,
+                loginDone: false,
+                loginError: null,
             }
         
-        case "LOGIN_SUCCESS" :
+        case LOGIN_SUCCESS :
             return {
                 ...state,
-                isLoggedIn: true,
-                isLoggingIn: false,
-                me: { ...action.data, nickname: 'userNick' },
+                loginDone: true,
+                loginLoading: false,
+                me: dummyUser(action.data),
             }
 
-        case "LOGIN_FAILURE" :
+        case LOGIN_FAILURE :
             return {
                 ...state,
-                isLoggingIn: false,
+                loginLoading: false,
+                loginError: action.error,
             }
 
-        case "LOGOUT_REQUEST" : 
+        case LOGOUT_REQUEST : 
             return {
                 ...state,
-                isLoggingOut: true,
+                logoutLoading: true,
+                logoutDone: false,
+                logoutError: null
             }
 
-        case "LOGOUT_SUCCESS" : 
+        case LOGOUT_SUCCESS : 
             return {
                 ...state,
-                isLoggedIn: false,
-                isLoggingOut: false,
+                // loginDone: false,
+                logoutLoading: false,
+                logoutDone: true,
                 me: null,
             }
 
-        case "LOGOUT_FAILURE" : 
+        case LOGOUT_FAILURE : 
             return {
                 ...state,
-                isLoggingOut: false,
+                logoutLoading: false,
+                logoutError: action.error,
+            }
+
+        case SIGNUP_REQUEST : 
+            return {
+                ...state,
+                singupLoading: true,
+                singupDone: false,
+                singupError: null
+            }
+
+        case SIGNUP_SUCCESS : 
+            return {
+                ...state,
+                singupLoading: false,
+                singupDone: true,
+            }
+
+        case SiGNUP_FAILURE : 
+            return {
+                ...state,
+                singupLoading: false,
+                singupError: action.error,
             }
 
         default: return state

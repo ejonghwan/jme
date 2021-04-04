@@ -13,7 +13,7 @@ import LoginForm from './Loginform.js'
 
 const Layout = ({ children }) => {
 
-    const isLoggedIn = useSelector(state => state.user.isLoggedIn)
+    const { me } = useSelector(state => state.user)
     
     return (
         <div>
@@ -32,7 +32,7 @@ const Layout = ({ children }) => {
                     {children}
                 </div>
                 <div>
-                    {isLoggedIn ? <UserProfile /> : <LoginForm />}
+                    {me ? <UserProfile /> : <LoginForm />}
                 </div>
             </div>
             

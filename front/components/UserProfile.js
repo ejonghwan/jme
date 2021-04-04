@@ -6,6 +6,8 @@ import { login_action, logout_action, logout_request_action}from '../reducers/us
 
 const UserProfile = ({ setIsLoggedIn }) => {
 
+    const { me } = useSelector(state => state.user) 
+    console.log('me ?? ', me)
     const dispatch = useDispatch()
     const handleLogout = useCallback(e => {
         e.preventDefault();
@@ -21,9 +23,9 @@ const UserProfile = ({ setIsLoggedIn }) => {
                 <span>userName</span>
             </div>
             <ul>
-                <li>num: <span>0</span></li>
-                <li>followings: <span>0</span></li>
-                <li>followers: <span>0</span></li>
+                <li>post: <span>{me.Posts.length}</span></li>
+                <li>followings: <span>{me.Followings.length}</span></li>
+                <li>followers: <span>{me.Followers.length}</span></li>
             </ul>
             <button onClick={handleLogout}>logout</button>
              

@@ -9,15 +9,15 @@ import { useSelector } from 'react-redux'
 
 const index = () => {
 
-    const { isLoggedIn } = useSelector(state => state.user)
+    const { loginDone, me } = useSelector(state => state.user)
     const { mainPosts } = useSelector(state => state.post)
-    const { isLoggingIn, isLoggingOut } = useSelector(state => state.user)
+    const { loginLoading, logoutLoading } = useSelector(state => state.user)
 
     return (
         <div>
             <Layout>
-                {isLoggedIn && <PostForm /> }
-                {isLoggingIn || isLoggingOut? (
+                {me && <PostForm /> }
+                {loginLoading || logoutLoading? (
                     <div>...loading</div>
                 ) : (
                     mainPosts.map(data => <PostCard key={data.id} data={data}/>)

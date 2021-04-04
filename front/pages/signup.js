@@ -4,7 +4,7 @@ import Layout from '../components/Layout.js'
 
 const Signup = () => {
 
-    const [id, handleIdChange] = useInput('');
+    const [email, handleEmailChange] = useInput('');
     const [nickname, handleNicknameChange] = useInput('');
     const [password, handlePasswordChange] = useInput('');
     const [passwordCheck, setPasswordCheckChange] = useState('');
@@ -25,7 +25,7 @@ const Signup = () => {
 
     const handleSubmit = useCallback(e => {
         e.preventDefault()
-        console.log(id, password, nickname)
+        console.log(email, password, nickname)
     }, [])
 
     // useEffect(() => {
@@ -40,8 +40,8 @@ const Signup = () => {
             singup
             <form onSubmit={handleSubmit}>
                 <div>
-                    <label htmlFor="id">id</label><br />
-                    <input type="text" onChange={handleIdChange} value={id} required />
+                    <label htmlFor="email">email</label><br />
+                    <input type="text" onChange={handleEmailChange} value={email} required />
                 </div>
                 <div>
                     <label htmlFor="nickname">nickname</label><br />
