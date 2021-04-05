@@ -20,6 +20,7 @@ function* login(action) {
         yield put({
             type: LOGIN_SUCCESS,
             // data: result.data
+            data: action.data,
         })
     } catch (err) {
         yield put({
@@ -42,6 +43,7 @@ function* logout(action) {
             type: LOGOUT_SUCCESS,
             // result: result.data,
         })
+        
     } catch(err) {
         yield put({
             type: LOGOUT_FAILURE,

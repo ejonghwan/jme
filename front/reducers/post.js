@@ -2,7 +2,7 @@ export const initialState = {
     mainPosts: [{
         id: 1,
         User: {
-            id: 'jjongrrr',
+            id: 'jjongrrr@naver.com',
             nickname: '종환'
         },
         content: '첫번째 게시글 #해시 #익스',
@@ -37,7 +37,31 @@ export const initialState = {
     addPostLoading: false,
     addPostDone: false,
     addPostError: null,
+    addCommentLoading: false,
+    addCommentDone: false,
+    addCommentError: null,
 }
+
+export const dummyPost = data => ({
+    id: randomKey(),
+    content: data,
+    User: {
+        id:"jjongrrr@naver.com",
+        nickname: 'dummy post name',
+    },
+    Images: [],
+    Comments: [],
+})
+
+export const dummyComment = data => ({
+    id: randomKey(),
+    content: data,
+    User: {
+        id:"jjongrrr",
+        nickname: 'comment name',
+    },
+})
+
 
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST"
@@ -49,6 +73,9 @@ export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS"
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE"
 
 
+const randomKey = () => {
+    return Math.random().toString(36).substr(2)
+}
 
 
 export const addPost = data => {
@@ -65,17 +92,6 @@ export const addComment = data => {
     }
 }
 
-export const dummyPost = {
-    id: 2,
-    content: '더미데이터입니다',
-    User: {
-        id:"jjongrrr",
-        nickname: 'name',
-    },
-    Images: [],
-    Comments: [],
-}
-
 const reducer = (state = initialState, action) => {
     switch(action.type) {
         case ADD_POST_REQUEST:
@@ -89,7 +105,7 @@ const reducer = (state = initialState, action) => {
         case ADD_POST_SUCCESS:
             return {
                 ...state,
-                mainPosts: [dummyPost, ...state.mainPosts],
+                mainPosts: [dummyPost(action.data), ...state.mainPosts],
                 addPostLoading: false,
                 addPostDone: true,
                 addPostError: null,
@@ -111,14 +127,20 @@ const reducer = (state = initialState, action) => {
                 addCommentError: null,
             }
 
-        case ADD_COMMENT_SUCCESS:
+        case ADD_COMMENT_SUCCESS: {
+            const postIndex = state.mainPosts.findIndex(v => v.id === action.data.postId);
+            const post = state.mainPosts[postIndex] //댓글중에서 내가쓴 댓글 부모 찾음
+            const Comments = [dummyComment(action.data.content), ...post.Comments] //코멘트 새롭게 복사 추가
+            const mainPosts = [...state.mainPosts] //메인포스트도 복사
+            mainPosts[postIndex] = { ...post, Comments }
             return {
                 ...state,
+                mainPosts,
                 addCommentLoading: false,
                 addCommentDone: true,
                 addCommentError: null,
             }
-
+        }
         case ADD_COMMENT_FAILURE:
             return {
                 ...state,

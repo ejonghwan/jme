@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link'
 
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,7 +7,6 @@ import { login_action, logout_action, login_request_action }from '../reducers/us
 const Loginform = () => {
 
     const dispatch = useDispatch()
-    
 
     const [userId, serUserId] = useState('');
     const [userPassword, setUserPassword] = useState('');
@@ -34,6 +33,8 @@ const Loginform = () => {
         console.log(userId, userPassword)
 
     }, [userId, userPassword])
+
+
 
     return (
         <form onSubmit={handleSubmit}>

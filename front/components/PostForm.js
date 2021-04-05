@@ -1,9 +1,10 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addPost } from '../reducers/post'
 
 const PostForm = () => {
 
+    const { addPostDone } = useSelector(state => state.post)
 
     const [post, setPost] = useState('')
     const handleChangePost = useCallback(e => {
@@ -18,9 +19,13 @@ const PostForm = () => {
     const dispatch = useDispatch()
     const handleChangeSubmit = useCallback(e => {
         e.preventDefault()
-        dispatch(addPost)
-        setPost('')
-    }, []) 
+        dispatch(addPost(post))
+        
+    }, [post]) 
+
+    useEffect(() => {
+        if(addPostDone) setPost('')
+    }, [addPostDone])
 
     return (
         <div>

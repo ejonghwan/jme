@@ -8,7 +8,7 @@ import PostCardContent from './PostCardContent.js'
 
 
 const PostCard = ({ data }) => {
-    console.log(data.Images[0])
+    // console.log(data.Images[0])
 
     const { me } = useSelector(state => state.user )
     const id = me && me.userId
@@ -21,9 +21,9 @@ const PostCard = ({ data }) => {
     })
 
 
-    useEffect(() => {
-        console.log(id)
-    }, [id])
+    // useEffect(() => {
+    //     console.log(id)
+    // }, [id])
     
 
     return (

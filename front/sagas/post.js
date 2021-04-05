@@ -18,6 +18,7 @@ function* addpost(action) {
         yield put({
             type: ADD_POST_SUCCESS,
             // data: result.data,
+            data: action.data,
         })
     } catch(err) {
         yield put({
@@ -27,13 +28,14 @@ function* addpost(action) {
     }
 }
 
-function* addcomment(action) {
+function* addComment(action) {
     // const result = yield call(addpostAPI, action.data) 
     yield delay(1000)
     try {
         yield put({
             type: ADD_COMMENT_SUCCESS,
             // data: result.data,
+            data: action.data,
         })
     } catch(err) {
         yield put({
@@ -50,7 +52,7 @@ function* watchAddPost() {
 }
 
 function* watchAddComment() {
-    yield takeLatest(ADD_COMMENT_REQUEST, addcomment)
+    yield takeLatest(ADD_COMMENT_REQUEST, addComment)
 }
 
 export default function* postSaga() {

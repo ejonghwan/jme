@@ -7,7 +7,7 @@ import { login_action, logout_action, logout_request_action}from '../reducers/us
 const UserProfile = ({ setIsLoggedIn }) => {
 
     const { me } = useSelector(state => state.user) 
-    console.log('me ?? ', me)
+    // console.log('me ?? ', me)
     const dispatch = useDispatch()
     const handleLogout = useCallback(e => {
         e.preventDefault();
