@@ -4,28 +4,28 @@ import { addPost } from '../reducers/post'
 
 const PostForm = () => {
 
-    const { addPostDone } = useSelector(state => state.post)
+    const { addPostDone } = useSelector(state => state.post);
 
     const [post, setPost] = useState('')
     const handleChangePost = useCallback(e => {
-        setPost(e.target.value)
-    }, [])
+        setPost(e.target.value);
+    }, []);
 
     const imgUpload = useRef();
     const handleImgUpload = useCallback(e => {
-        imgUpload.current.click()
-    }, [imgUpload.current])
+        imgUpload.current.click();
+    }, [imgUpload.current]);
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const handleChangeSubmit = useCallback(e => {
-        e.preventDefault()
-        dispatch(addPost(post))
+        e.preventDefault();
+        dispatch(addPost(post));
         
-    }, [post]) 
+    }, [post]); 
 
     useEffect(() => {
-        if(addPostDone) setPost('')
-    }, [addPostDone])
+        if(addPostDone) setPost('');
+    }, [addPostDone]);
 
     return (
         <div>

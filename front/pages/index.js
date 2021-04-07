@@ -13,7 +13,7 @@ const index = () => {
     const { mainPosts } = useSelector(state => state.post)
     const { loginLoading, logoutLoading } = useSelector(state => state.user)
     
-    console.log(me)
+    // console.log(me)
     return (
         <div>
             <Layout>

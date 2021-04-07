@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import ImageForm from './ImageForm.js'
 import CommentForm from './CommentForm.js'
 import CommentList from './CommentList.js'
 import PostCardContent from './PostCardContent.js'
-
+import { removePost } from '../reducers/post'
 
 
 const PostCard = ({ data }) => {
     // console.log(data.Images[0])
+
+    const dispatch = useDispatch()
 
     const { me } = useSelector(state => state.user )
     const id = me && me.userId
@@ -20,6 +22,10 @@ const PostCard = ({ data }) => {
         if(e.target.name === 'comment') setComment(prev => !prev)
     })
 
+
+    const handleRemoveValue = e => {
+        dispatch(removePost(data.id))
+    }
 
     // useEffect(() => {
     //     console.log(id)
@@ -42,7 +48,7 @@ const PostCard = ({ data }) => {
             {id && data.User.id === id ? (
                 <>
                     <button>수정</button>
-                    <button>삭제</button>
+                    <button onClick={handleRemoveValue}>삭제</button>
                 </>
             ) : ( 
                 <>
