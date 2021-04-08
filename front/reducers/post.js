@@ -60,6 +60,34 @@ export const dummyPost = data => ({
     Comments: [],
 })
 
+
+
+// faker data,
+// initialState.mainPosts = initialState.mainPosts.concat(
+//     Array(20).fill().map((val, idx) => {
+//         return {
+//             id: randomKey(),
+//             User: {
+//                 id: randomKey(),
+//                 nickname: faker.name.findName(),
+//             },
+//             content: faker.lorem.paragraph(),
+//             Images: [
+//                 {src: faker.image.imageUrl()},
+//                 {src: faker.image.imageUrl()},
+//                 {src: faker.image.imageUrl()},
+//             ],
+//             Comments: [{
+//                 User: {
+//                     id: randomKey(),
+//                     nickname: faker.name.findName(),
+//                 },
+//                 content: faker.lorem.sentence(),
+//             }],
+//         }
+//     })
+// )
+
 export const dummyComment = data => ({
     id: randomKey(),
     content: data,
@@ -68,32 +96,6 @@ export const dummyComment = data => ({
         nickname: 'comment name',
     },
 })
-
-// faker data,
-initialState.mainPosts = initialState.mainPosts.concat(
-    Array(20).fill().map((val, idx) => {
-        return {
-            id: randomKey(),
-            User: {
-                id: randomKey(),
-                nickname: faker.name.findName(),
-            },
-            content: faker.lorem.paragraph(),
-            Images: [
-                {src: faker.image.imageUrl()},
-                {src: faker.image.imageUrl()},
-                {src: faker.image.imageUrl()},
-            ],
-            Comments: [{
-                User: {
-                    id: randomKey(),
-                    nickanme: faker.name.findName(),
-                },
-                content: faker.lorem.sentence(),
-            }],
-        }
-    })
-)
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST"
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS"
@@ -183,6 +185,7 @@ const reducer = (state = initialState, action) => {
              }
 
              case ADD_COMMENT_REQUEST: {
+                 console.log(action)
                 draft.addCommentLoading = true;
                 draft.addCommentDone = false;
                 draft.addCommentError = null;
@@ -191,7 +194,8 @@ const reducer = (state = initialState, action) => {
          
     
             case ADD_COMMENT_SUCCESS: {
-                const post = draft.mainPosts.findIndex(val => val.id === action.data.postId);
+                const post = draft.mainPosts.find(val => val.id === action.data.postId);
+                console.log('post: ', post)
                 post.Comments.unshift(dummyComment(action.data.content));
                 draft.addCommentLoading = false;
                 draft.addCommentDone = true;
