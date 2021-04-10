@@ -3,41 +3,13 @@ import produce from 'immer'
 import faker from 'faker'
 
 export const initialState = {
-    mainPosts: [{
-        id: 1,
-        User: {
-            id: 'jjongrrr@naver.com',
-            nickname: '종환'
-        },
-        content: '첫번째 게시글 #해시 #익스',
-        Images: [{
-            src:'http://placehold.it/320x100',
-        }, {
-            src:'http://placehold.it/320x100',
-        },{
-            src:'http://placehold.it/320x100',
-        }],
-        Comments: [{
-            User: {
-                nickname: 'aa',
-            },
-            content: 'aa aasdasdasd'
-        },
-        {
-            User: {
-                nickname: 'bb',
-            },
-            content: 'bb aasdasdasd'
-        },
-        {
-            User: {
-                nickname: 'aa',
-            },
-            content: 'bb aasdasdasd'
-        }]
-    }],
+    mainPosts: [],
     imagePaths: [], //이미지 업로드할 때 경로
     postAdded: false, //게시글 추가완료
+    loadPostLoading: false,
+    loadPostDone: false,
+    loadPostError: false,
+    infiniteLimit: true,
     addPostLoading: false,
     addPostDone: false,
     addPostError: null,
@@ -47,7 +19,35 @@ export const initialState = {
     addCommentLoading: false,
     addCommentDone: false,
     addCommentError: null,
+    
 }
+
+
+export const generaterDummyPost = lengthData => {
+    return Array(lengthData).fill().map(() => {
+        return {
+            id: randomKey(),
+            User: {
+                id: randomKey(),
+                nickname: faker.name.findName(),
+            },
+            content: faker.lorem.paragraph(),
+            Images: [
+                {src: faker.image.image()},
+                {src: faker.image.image()},
+                {src: faker.image.image()},
+            ],
+            Comments: [{
+                User: {
+                    id: randomKey(),
+                    nickname: faker.name.findName(),
+                },
+                content: faker.lorem.sentence(),
+            }],
+        }
+    })
+}
+
 
 export const dummyPost = data => ({
     id: data.id,
@@ -61,7 +61,6 @@ export const dummyPost = data => ({
 })
 
 
-
 // faker data,
 // initialState.mainPosts = initialState.mainPosts.concat(
 //     Array(20).fill().map((val, idx) => {
@@ -73,9 +72,9 @@ export const dummyPost = data => ({
 //             },
 //             content: faker.lorem.paragraph(),
 //             Images: [
-//                 {src: faker.image.imageUrl()},
-//                 {src: faker.image.imageUrl()},
-//                 {src: faker.image.imageUrl()},
+//                 {src: faker.image.image()},
+//                 {src: faker.image.image()},
+//                 {src: faker.image.image()},
 //             ],
 //             Comments: [{
 //                 User: {
@@ -105,6 +104,10 @@ export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST"
 export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS"
 export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE"
 
+export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST"
+export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS"
+export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE"
+
 export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST"
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS"
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE"
@@ -129,12 +132,12 @@ export const removePost = data => {
     }
 }
 
-export const addComment = data => {
-    return {
-        type: ADD_COMMENT_REQUEST,
-        data,
-    }
-}
+// export const addComment = data => {
+//     return {
+//         type: ADD_COMMENT_REQUEST,
+//         data,
+//     }
+// }
 
 
 
@@ -194,9 +197,10 @@ const reducer = (state = initialState, action) => {
          
     
             case ADD_COMMENT_SUCCESS: {
-                const post = draft.mainPosts.find(val => val.id === action.data.postId);
+                // const post = draft.mainPosts.find(val => val.id === action.data.postId); //find는 객체 바로 
+                const post = draft.mainPosts.filter(val => val.id === action.data.postId); //filter는 배열로 반환해줌
                 console.log('post: ', post)
-                post.Comments.unshift(dummyComment(action.data.content));
+                post[0].Comments.unshift(dummyComment(action.data.content));
                 draft.addCommentLoading = false;
                 draft.addCommentDone = true;
                 draft.addCommentError = null;
@@ -220,6 +224,32 @@ const reducer = (state = initialState, action) => {
                 draft.addCommentError = action.error;
                 break
              }
+
+            case LOAD_POST_REQUEST: {
+                draft.loadPostLoading = true;
+                draft.loadPostDone = false;
+                draft.loadPostError = null;
+                break
+            }
+
+            case LOAD_POST_SUCCESS: {
+                console.log('length : ', draft.mainPosts.length)
+                // console.log('length : ', action.data.concat(draft.mainPosts).length)
+                draft.loadPostLoading = false;
+                draft.loadPostDone = true;
+                draft.loadPostError = null;
+                draft.mainPosts = draft.mainPosts.concat(action.data);
+                draft.infiniteLimit = draft.mainPosts.length < 50
+                // draft.infiniteLimit = action.data.concat(draft.mainPosts).length < 50
+                break
+            }
+
+            case LOAD_POST_FAILURE: {
+                draft.loadPostLoading = false;
+                draft.loadPostDone = false;
+                draft.loadPostError = action.data.error;
+                break
+            }
 
             default: break   
         }

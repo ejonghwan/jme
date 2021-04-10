@@ -39,7 +39,7 @@ const PostCard = ({ data }) => {
             <div>{data.User.nickname}</div>
             <div>{<PostCardContent data={data.content}/>}</div>
             <button>리트윗</button>
-            {like ? (
+            {!like ? (
                 <button name="like" onClick={handleToggle} style={{color: 'black'}}>좋아요</button>
             ) : (
                 <button name="like" onClick={handleToggle} style={{color: 'red'}}>좋아요</button>

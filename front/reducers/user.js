@@ -53,7 +53,7 @@ export const UNFOLLOW_REQUEST = "UNFOLLOW_REQUEST"
 export const UNFOLLOW_SUCCESS = "UNFOLLOW_SUCCESS"
 export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE"
 
-export const ADD_POST_TO_ME = "USER_POST_TO_ME"
+export const ADD_POST_TO_ME = "ADD_POST_TO_ME"
 export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME"
 
 export const login_request_action = (data) => {

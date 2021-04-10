@@ -5,7 +5,9 @@ import Axios from 'axios'
 import {
     ADD_POST_REQUEST, ADD_POST_SUCCESS, ADD_POST_FAILURE,
     ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE, 
-    REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE, REMOVE_POST_REQUEST,
+    REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE, REMOVE_POST_REQUEST, 
+    LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE,
+    generaterDummyPost
 } from '../reducers/post'
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME} from '../reducers/user'
@@ -88,6 +90,21 @@ function* addComment(action) {
 }
 
 
+function* loadPost(action) {
+    yield delay(1000);
+    try {
+        yield put({
+            type: LOAD_POST_SUCCESS,
+            data: generaterDummyPost(10)
+        })
+    } catch (err) {
+        yield put({
+            type: LOAD_POST_FAILURE,
+            error: err.response.data
+        })
+    }
+}
+
 
 function* watchAddPost() {
     yield takeLatest(ADD_POST_REQUEST, addpost)
@@ -101,11 +118,16 @@ function* watchRemovePost() {
     yield takeLatest(REMOVE_POST_REQUEST, removePost)
 }
 
+function* watchloadPost() {
+    yield takeLatest(LOAD_POST_REQUEST, loadPost)
+}
+
 export default function* postSaga() {
     yield all([
         fork(watchAddPost),
         fork(watchRemovePost),
         fork(watchAddComment),
+        fork(watchloadPost),
         
     ])
 }
