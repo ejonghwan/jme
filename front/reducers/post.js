@@ -250,7 +250,6 @@ const reducer = (state = initialState, action) => {
                 draft.loadPostError = action.data.error;
                 break
             }
-
             default: break   
         }
     })

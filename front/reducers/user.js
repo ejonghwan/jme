@@ -17,6 +17,12 @@ export const initialState = {
     me: null,
     loginData: {},
     signupData: {},
+    followLoading: false,
+    followDone: false,
+    followError: null,
+    unfollowLoading: false,
+    unfollowDone: false,
+    unfollowError: null,
 }
 
 const dummyUser = data => ({
@@ -162,6 +168,51 @@ const reducer = (state = initialState, action) => {
                 // console.log(action)
                 draft.me.Posts = draft.me.Posts.filter(val => val.id !== action.data)
                 break;
+            }
+
+            case FOLLOW_REQUEST: {
+                draft.followLoading = true;
+                draft.followDone = false;
+                draft.followError = null;
+                break
+            }
+
+            case FOLLOW_SUCCESS: {
+                draft.followLoading = false;
+                draft.followDone = true;
+                draft.followError = null;
+                draft.me.Followings.push(action.data)
+                break
+            }
+
+            case FOLLOW_FAILURE: {
+                draft.followLoading = false;
+                draft.followDone = false;
+                draft.followError = action.data.error;
+                break
+            }
+
+            case UNFOLLOW_REQUEST: {
+                draft.unfollowLoading = true;
+                draft.unfollowDone = false;
+                draft.unfollowError = null;
+                break
+            }
+
+            case UNFOLLOW_SUCCESS: {
+                // console.log(state.me.Followings)
+                draft.unfollowLoading = false;
+                draft.unfollowDone = true;
+                draft.unfollowError = null;
+                draft.me.Followings = draft.me.Followings.filter(val => val.id !== action.data.id)
+                break
+            }
+
+            case UNFOLLOW_FAILURE: {
+                draft.unfollowLoading = false;
+                draft.unfollowDone = false;
+                draft.unfollowError = action.data.error;
+                break
             }
 
             default: break;                 

@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import ImageForm from './ImageForm.js'
 import CommentForm from './CommentForm.js'
 import CommentList from './CommentList.js'
+import FollowButton from './FollowButton.js'
 import PostCardContent from './PostCardContent.js'
 import { removePost } from '../reducers/post'
+
 
 
 const PostCard = ({ data }) => {
@@ -35,6 +37,7 @@ const PostCard = ({ data }) => {
     return (
         <div>
             {data.Images[0] && <ImageForm data={data} />}
+            <FollowButton data={data}/>
             <div>{data.User.nickname[0]}</div>
             <div>{data.User.nickname}</div>
             <div>{<PostCardContent data={data.content}/>}</div>

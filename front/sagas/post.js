@@ -7,7 +7,7 @@ import {
     ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE, 
     REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE, REMOVE_POST_REQUEST, 
     LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE,
-    generaterDummyPost
+    generaterDummyPost,
 } from '../reducers/post'
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME} from '../reducers/user'
@@ -106,6 +106,8 @@ function* loadPost(action) {
 }
 
 
+
+
 function* watchAddPost() {
     yield takeLatest(ADD_POST_REQUEST, addpost)
 }
@@ -122,12 +124,13 @@ function* watchloadPost() {
     yield takeLatest(LOAD_POST_REQUEST, loadPost)
 }
 
+
+
 export default function* postSaga() {
     yield all([
         fork(watchAddPost),
         fork(watchRemovePost),
         fork(watchAddComment),
         fork(watchloadPost),
-        
     ])
 }
