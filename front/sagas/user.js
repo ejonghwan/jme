@@ -1,4 +1,4 @@
-import { all, put, takeLatest, takeEvery, throttle, fork, delay,  } from "@redux-saga/core/effects";
+import { all, put, takeLatest, takeEvery, throttle, fork, delay, call } from "@redux-saga/core/effects";
 import Axios from 'axios'
 
 import { 
@@ -54,10 +54,15 @@ function* logout(action) {
     }
 }
 
+function signupAPI(data) {
+    return Axios.post('http://localhost:3060/user', data)
+}
+
 
 function* singup(action) {
-    // const result = call(logoutAPI, action.data)
-    yield delay(1000)
+    const result = yield call(signupAPI, action.data)
+    console.log(result)
+    // yield delay(1000)
     try {
         yield put({
             type: SIGNUP_SUCCESS,

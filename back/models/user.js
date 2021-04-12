@@ -1,4 +1,3 @@
-const { DataTypes } = require("sequelize/types");
 
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define("User", { //MySQL에는 users로 저장됨
@@ -23,8 +22,17 @@ module.exports = (sequelize, DataTypes) => {
 
     // 관계
     User.associate = (db) => {
+        //belongsTo 는 컬럼을 만들어줌
         db.User.hasMany(db.Post); //하나의 User에 여러 Post가 연결되어있다 
         db.User.hasMany(db.Comment)
+
+        //중간 테이블의 이름은 두번째 인자로 정해줌 반대 테이블에서도 똑같이 넣어야함
+        // 나중에 as로 좋아요한 사람을 가져올 수 있음. 별칭.
+        db.User.belongsToMany(db.Post, { through: 'Like', as: 'Liked' }) 
+
+        //다대다 관계에서 같은 유저에서 관계를 찾을 땐 먼저 찾을걸 foreingKey에 넣어줌
+        db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followers', foreingKey: 'FollowingId', });
+        db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followings', foreingKey: 'FollowerId', });
 
     };
     return User;

@@ -1,4 +1,4 @@
-const { DataTypes } = require("sequelize/types");
+
 
 module.exports = (sequelize, DataTypes) => {
     const Image = sequelize.define("Image", { //MySQL에는 Images로 저장됨

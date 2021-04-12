@@ -35,6 +35,16 @@ const db = {};
 // sequelize로 node mysql 연결
 const sequelize = new Sequelize(config.database, config.username, config.password, config)
 
+
+//불러오기
+db.Comment = require('./comment')(sequelize, Sequelize) //require로 코멘트 함수실행
+db.Hashtag = require('./hashtag')(sequelize, Sequelize)
+db.Image = require('./image')(sequelize, Sequelize)
+db.Post = require('./post')(sequelize, Sequelize) 
+db.User = require('./user')(sequelize, Sequelize) 
+
+
+// 각 파일마다 db. 이런애들을 찾아서 다 등록해줌
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
