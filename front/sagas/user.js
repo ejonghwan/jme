@@ -55,7 +55,7 @@ function* logout(action) {
 }
 
 function signupAPI(data) {
-    return Axios.post('http://localhost:3060/user', data)
+    return Axios.post('http://localhost:3065/user/', data)
 }
 
 
@@ -117,7 +117,7 @@ function* watchLogout() {
     yield takeLatest(LOGOUT_REQUEST, logout)
 }
 
-function* signupLogout() {
+function* watchSignup() {
     yield takeLatest(SIGNUP_REQUEST, singup)
 }
 
@@ -133,7 +133,7 @@ export default function* userSaga () {
     yield all([
         fork(watchLogin),
         fork(watchLogout),
-        fork(signupLogout),
+        fork(watchSignup),
         fork(watchfollow),
         fork(watchunfollow),
     ]);

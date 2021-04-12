@@ -1,7 +1,12 @@
 const express = require('express');
-const router = express()
 const { User } = require('../models/user') //module에 만든 User db
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const post = require('../models/post');
+const router = express()
+
+// router.get('/', (req, res) => {
+//     res.send('asdasdasd')
+// })
 
 router.post('/', async (req, res, next) => { //POST /user/
     try {
@@ -25,6 +30,9 @@ router.post('/', async (req, res, next) => { //POST /user/
             nickname: req.body.nickname,
             password: hashedPassword,
         });
+
+        //프론트를 프록시로 허용하게끔 하거나 npm i cors
+        // res.setHeader('Access-Control-Allow-Origin', '*')
 
         //200 성공 300리다이렉트 400클라이언트 요청  500서버처리에러
         res.status(201).send('ok');
