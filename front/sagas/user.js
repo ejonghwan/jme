@@ -1,3 +1,4 @@
+
 import { all, put, takeLatest, takeEvery, throttle, fork, delay, call } from "@redux-saga/core/effects";
 import Axios from 'axios'
 
@@ -16,9 +17,10 @@ function loginAPI(data) {
 }
 
 function* login(action) {
-    // const result = yield call(loginAPI, action.data)
-    yield delay(1000)
+
     try {
+        // const result = yield call(loginAPI, action.data)
+        yield delay(1000)
         yield put({
             type: LOGIN_SUCCESS,
             // data: result.data
@@ -38,9 +40,10 @@ function logoutAPI(data) {
 }
 
 function* logout(action) {
-    // const result = call(logoutAPI, action.data)
-    yield delay(1000)
+    
     try {
+        // const result = call(logoutAPI, action.data)
+        yield delay(1000)
         yield put({
             type: LOGOUT_SUCCESS,
             // result: result.data,
@@ -59,11 +62,13 @@ function signupAPI(data) {
 }
 
 
-function* singup(action) {
-    const result = yield call(signupAPI, action.data)
-    console.log(result)
-    // yield delay(1000)
+function* signup(action) {
+    
     try {
+        const result = yield call(signupAPI, action.data)
+        console.log(result)
+        // yield delay(1000)
+        console.log(action)
         yield put({
             type: SIGNUP_SUCCESS,
             // result: result.data,
@@ -118,7 +123,7 @@ function* watchLogout() {
 }
 
 function* watchSignup() {
-    yield takeLatest(SIGNUP_REQUEST, singup)
+    yield takeLatest(SIGNUP_REQUEST, signup)
 }
 
 function* watchfollow() {

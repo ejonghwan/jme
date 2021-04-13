@@ -1,12 +1,9 @@
 const express = require('express');
-const { User } = require('../models/user') //module에 만든 User db
+const { User } = require('../models') //module에 만든 User db
 const bcrypt = require('bcrypt');
-const post = require('../models/post');
-const router = express()
+// const post = require('../models/post');
+const router = express.Router()
 
-// router.get('/', (req, res) => {
-//     res.send('asdasdasd')
-// })
 
 router.post('/', async (req, res, next) => { //POST /user/
     try {

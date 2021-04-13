@@ -20,16 +20,18 @@
 
 
 const express = require('express')
-const app = express()
-const cors = require('cors')
 const postRouter = require('./routes/post')
 const userRouter = require('./routes/user')
+const db = require('./models')
+const app = express()
+const cors = require('cors')
+
 const bcrypt = require('bcrypt')
 
 
 
 //시퀄라이즈 마지막으로 앱이랑 연결    !!! npx sequelize db:create 이거해서 디비부터 생성
-const db = require('./models')
+
 db.sequelize.sync()
     .then(() => {
         console.log('db connected')
@@ -37,10 +39,12 @@ db.sequelize.sync()
     .catch(console.error)
 
 
-app.use(cors({
-    origin: '*', //true로 하면 *대신 보낸곳의 주소가 자동으로 들어가 편리. //지금은 다 허용이지만 나중엔 내 도메인만
-    credentials: false, // 나중에 true로 바꿔야됨
-}))
+// app.use(cors({
+//     origin: '*', //true로 하면 *대신 보낸곳의 주소가 자동으로 들어가 편리. //지금은 다 허용이지만 나중엔 내 도메인만
+//     credentials: false, // 나중에 true로 바꿔야됨
+// }))
+
+app.use(cors())
 
 // .use는 express에 뭔가 장착해서 넣어준다는건데 클라이언트에서 post put patch로 보내준 데이터를 해석해서 body에 넣어줌. use안에는 middleware넣어줌. 순서중요
 app.use(express.json()) // front안에 json으로 보냈을 때 req.body안에 json으로 넣어줌
@@ -48,7 +52,7 @@ app.use(express.urlencoded({ extended: true })); // form submit했을떄 urlinco
 
 
 
-app.get('/', (req, res) => {
+app.post('/', (req, res) => {
     res.json([
         {id:1, content: 'asdasd1'},
         {id:2, content: 'asdasd2'},

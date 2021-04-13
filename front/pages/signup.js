@@ -34,7 +34,7 @@ const Signup = () => {
             type: SIGNUP_REQUEST,
             data: { email, password, nickname }
         })
-    }, [])
+    }, [email, password, nickname])
 
     // useEffect(() => {
     //     console.log(passwordErr)
