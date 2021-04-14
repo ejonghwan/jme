@@ -1,8 +1,15 @@
+
+
+
+
 import { all, call, delay, fork, put, take, takeLatest } from 'redux-saga/effects'
+import axios from 'axios';
 
 import postSaga from './post'
 import userSaga from './user'
 
+//baseURL은 앞에 중복을 줄여줌
+// axios.defaults.baseURL = 'http://localhost:3000';
 
 export default function* rootSaga() {
     yield all([

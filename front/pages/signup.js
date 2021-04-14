@@ -3,10 +3,14 @@ import useInput from '../components/hooks/useInput.js';
 import Layout from '../components/Layout.js'
 import { SIGNUP_REQUEST } from '../reducers/user.js';
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import Router from 'next/router'
+
+
 const Signup = () => {
 
     const dispatch = useDispatch()
+    const { signupLoading, signupDone, signupError, initialState } = useSelector(state => state.user)
 
     const [email, handleEmailChange] = useInput('');
     const [nickname, handleNicknameChange] = useInput('');
@@ -36,10 +40,18 @@ const Signup = () => {
         })
     }, [email, password, nickname])
 
-    // useEffect(() => {
-    //     console.log(passwordErr)
-    // }, [passwordErr])
+    useEffect(() => {
+       if(signupDone) {
+            Router.push('/')
+       }
+      
+    }, [signupDone])
 
+    useEffect(() => {
+        if(signupError) {
+             console.error(signupError)
+        }
+     }, [signupError])
 
 
 

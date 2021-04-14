@@ -1,6 +1,6 @@
 
 import { all, put, takeLatest, takeEvery, throttle, fork, delay, call } from "@redux-saga/core/effects";
-import Axios from 'axios'
+import axios from 'axios'
 
 import { 
     LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, 
@@ -13,14 +13,15 @@ import {
 
 
 function loginAPI(data) {
-    return Axios.post('/api/login', data)
+    return axios.post('/user/login', data)
 }
 
 function* login(action) {
 
     try {
         // const result = yield call(loginAPI, action.data)
-        yield delay(1000)
+        // console.log(result)
+        // yield delay(1000)
         yield put({
             type: LOGIN_SUCCESS,
             // data: result.data
@@ -36,7 +37,7 @@ function* login(action) {
 }
 
 function logoutAPI(data) {
-    return Axios.post('/api/logout', data)
+    return axios.post('/user/logout', data)
 }
 
 function* logout(action) {
@@ -58,7 +59,7 @@ function* logout(action) {
 }
 
 function signupAPI(data) {
-    return Axios.post('http://localhost:3065/user/', data)
+    return axios.post('http://localhost:3000/user', data)
 }
 
 
@@ -68,7 +69,7 @@ function* signup(action) {
         const result = yield call(signupAPI, action.data)
         console.log(result)
         // yield delay(1000)
-        console.log(action)
+        // console.log(action)
         yield put({
             type: SIGNUP_SUCCESS,
             // result: result.data,
@@ -76,7 +77,7 @@ function* signup(action) {
     } catch(err) {
         yield put({
             type: SiGNUP_FAILURE,
-            error: err.response.data,
+            error: err.response.data, //여기서 err.response.data는 서버쪽에서 보내준 404에러 메시지
         })
     }
 }

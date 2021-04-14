@@ -91,7 +91,8 @@ const reducer = (state = initialState, action) => {
             case LOGIN_SUCCESS: {
                 draft.loginDone = true;
                 draft.loginLoading = false;
-                draft.me = dummyUser(action.data);
+                // draft.me = dummyUser(action.data);
+                draft.me = action.data;
                 break;
             }
 
@@ -122,21 +123,21 @@ const reducer = (state = initialState, action) => {
             }
 
             case SIGNUP_REQUEST: {
-                draft.singupLoading = true;
-                draft.singupDone = false;
-                draft.singupError = null;
+                draft.signupLoading = true;
+                draft.signupDone = false;
+                draft.signupError = null;
                 break;
             }
 
             case SIGNUP_SUCCESS: {
-                draft.singupLoading = false;
-                draft.singupDone = true;
+                draft.signupLoading = false;
+                draft.signupDone = true;
                 break;
             }
 
             case SiGNUP_FAILURE: {
-                draft.singupLoading = false;
-                draft.singupError = action.error;
+                draft.signupLoading = false;
+                draft.signupError = action.error;
                 break;
             }
 
