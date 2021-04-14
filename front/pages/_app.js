@@ -17,7 +17,7 @@ const App = ({ Component }) => {
     return (
         <div>
             <Head>
-                <title>jme</title>
+                <title>jme1</title>
             </Head>
             <Component />
         </div>
