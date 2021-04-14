@@ -18,6 +18,7 @@ const App = ({ Component }) => {
         <div>
             <Head>
                 <title>jme1</title>
+                <link href='//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css' rel='stylesheet' type='text/css'></link>
             </Head>
             <Component />
         </div>

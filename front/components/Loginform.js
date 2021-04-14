@@ -51,6 +51,7 @@ const Loginform = () => {
             <div>
                 <label htmlFor="user_password">password</label><br />
                 <input 
+                    type="password"
                     name="user_password" 
                     value={userPassword} 
                     onChange={handleChange} 

@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux'
 import styles from "./Layout.module.css"
 import UserProfile from './UserProfile.js'
 import LoginForm from './Loginform.js'
+import Headers from './Headers.js'
 
 
 
@@ -17,18 +18,12 @@ const Layout = ({ children }) => {
     
     return (
         <div>
-            <div>
-                <Link href="/"><a>home</a></Link>
-                <Link href="/profile"><a>profile</a></Link>
-                <Link href="/signup"><a>signup</a></Link>
-                <input type="text" />
-                <button>search</button>
-            </div>
+            <Headers />
             <div className={styles.contents}>
-                <div>
-                <a href="https://www.naver.com" target="_blank" rel="noreferrer noopener">naver test</a>
-                </div>
-                <div>
+                {/* <div>
+                    <a href="https://www.naver.com" target="_blank" rel="noreferrer noopener">naver test</a>
+                </div> */}
+                <div className={styles.mainView}>
                     {children}
                 </div>
                 <div>
