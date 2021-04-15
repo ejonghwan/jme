@@ -1,8 +1,8 @@
 import React from 'react'
-import styles from './DefaultButton.module.css'
+import styles from './TextButton.module.css'
 import classnames from 'classnames'
 
-const DefaultButton = ({type, value}) => {
+const TextButton = ({type, value}) => {
     return (
         <>
             {type === 'type1' && (
@@ -32,4 +32,4 @@ const DefaultButton = ({type, value}) => {
     )  
 }
 
-export default DefaultButton;
+export default TextButton;
