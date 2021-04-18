@@ -3,6 +3,7 @@ import Link from 'next/link'
 import styles from './Headers.module.css'
 
 import DefaultButton from '../components/smallPieces/button/DefaultButton'
+import SerchForm from './smallPieces/input/SerchForm';
 
 const Headers = () => {
     return (
@@ -11,7 +12,7 @@ const Headers = () => {
             <Link href="/"><a>home</a></Link>
             <Link href="/profile"><a>profile</a></Link>
             <Link href="/signup"><a>signup</a></Link>
-            <div className={styles.serch}><input type="text" /><DefaultButton value={"검색"}/></div>
+            <SerchForm width={200}/>
         </header>
     )
 }
