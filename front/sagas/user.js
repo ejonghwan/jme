@@ -3,6 +3,7 @@ import { all, put, takeLatest, takeEvery, throttle, fork, delay, call } from "@r
 import axios from 'axios'
 
 import { 
+    LOAD_MY_INFO_REQUEST, LOAD_MY_INFO_SUCCESS, LOAD_MY_INFO_FAILURE,
     LOGIN_REQUEST, LOGIN_SUCCESS, LOGIN_FAILURE, 
     LOGOUT_SUCCESS, LOGOUT_FAILURE,LOGOUT_REQUEST,
     SIGNUP_REQUEST, SIGNUP_SUCCESS, SiGNUP_FAILURE,  
@@ -11,21 +12,41 @@ import {
 } from '../reducers/user'
 
 
+function myinfoAPI(data) {
+    return axios.get('/user')
+}
+
+function* myinfo(action) {
+    try {
+        const result = yield call(myinfoAPI, action.data)
+        yield put({
+            type: LOAD_MY_INFO_SUCCESS,
+            data: result.data,
+
+        })
+    } catch (err) {
+        yield put({
+            type: LOAD_MY_INFO_FAILURE,
+            error: err.response.data,
+        })
+    } 
+}
+
 
 function loginAPI(data) {
     return axios.post('/user/login', data)
 }
 
 function* login(action) {
-
+    console.log('saga data: ', action)
     try {
-        // const result = yield call(loginAPI, action.data)
-        // console.log(result)
+        const result = yield call(loginAPI, action.data)
+        console.log(result)
         // yield delay(1000)
         yield put({
             type: LOGIN_SUCCESS,
-            // data: result.data
-            data: action.data,
+            data: result.data //post로 받아온 데이터
+            // data: action.data,
         })
     } catch (err) {
         yield put({
@@ -33,21 +54,19 @@ function* login(action) {
             error: err.response.data,
         })
     } 
-
 }
 
 function logoutAPI(data) {
-    return axios.post('/user/logout', data)
+    return axios.post('/user/logout')
 }
 
 function* logout(action) {
     
     try {
-        // const result = call(logoutAPI, action.data)
-        yield delay(1000)
+        yield call(logoutAPI)
+        // yield delay(1000)
         yield put({
             type: LOGOUT_SUCCESS,
-            // result: result.data,
         })
         
     } catch(err) {
@@ -59,7 +78,7 @@ function* logout(action) {
 }
 
 function signupAPI(data) {
-    return axios.post('http://localhost:3000/user', data)
+    return axios.post('http://localhost:3065/user', data)
 }
 
 
@@ -115,6 +134,10 @@ function* unfollow(action) {
 }
 
 // 여기서 받는 request 액션에 실어오는 payload가 login함수에 action으로 전달함 그래서 거기서 type data를 받아올 수 있음
+function* watchMyinfo() { 
+    yield takeLatest(LOAD_MY_INFO_REQUEST, myinfo)
+}
+
 function* watchLogin() { 
     yield takeLatest(LOGIN_REQUEST, login)
 }
@@ -137,6 +160,7 @@ function* watchunfollow() {
 
 export default function* userSaga () {
     yield all([
+        fork(watchMyinfo),
         fork(watchLogin),
         fork(watchLogout),
         fork(watchSignup),

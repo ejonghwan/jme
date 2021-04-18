@@ -49,16 +49,16 @@ export const generaterDummyPost = lengthData => {
 }
 
 
-export const dummyPost = data => ({
-    id: data.id,
-    content: data.content,
-    User: {
-        id:"jjongrrr@naver.com",
-        nickname: 'dummy post name',
-    },
-    Images: [],
-    Comments: [],
-})
+// export const dummyPost = data => ({
+//     id: data.id,
+//     content: data.content,
+//     User: {
+//         id:"jjongrrr@naver.com",
+//         nickname: 'dummy post name',
+//     },
+//     Images: [],
+//     Comments: [],
+// })
 
 
 // faker data,
@@ -152,7 +152,8 @@ const reducer = (state = initialState, action) => {
             }
 
             case ADD_POST_SUCCESS: {
-                draft.mainPosts.unshift(dummyPost(action.data));
+                draft.mainPosts.unshift(action.data);
+                // draft.mainPosts.unshift(dummyPost(action.data));
                 draft.addPostLoading = false;
                 draft.addPostDone = true;
                 draft.addPostError = null;
@@ -160,7 +161,8 @@ const reducer = (state = initialState, action) => {
              }
 
              case ADD_POST_FAILURE: {
-                draft.mainPosts.unshift(dummyPost(action.data))
+                // draft.mainPosts.unshift(dummyPost(action.data))
+                draft.mainPosts.unshift(action.data);
                 draft.addPostLoading = false;
                 draft.addPostError = action.error;
                 break
@@ -198,9 +200,10 @@ const reducer = (state = initialState, action) => {
     
             case ADD_COMMENT_SUCCESS: {
                 // const post = draft.mainPosts.find(val => val.id === action.data.postId); //find는 객체 바로 
-                const post = draft.mainPosts.filter(val => val.id === action.data.postId); //filter는 배열로 반환해줌
+                const post = draft.mainPosts.filter(val => val.id === action.data.PostId); //filter는 배열로 반환해줌
                 console.log('post: ', post)
-                post[0].Comments.unshift(dummyComment(action.data.content));
+                // post[0].Comments.unshift(dummyComment(action.data.content));
+                post[0].Comments.unshift(action.data.content);
                 draft.addCommentLoading = false;
                 draft.addCommentDone = true;
                 draft.addCommentError = null;
@@ -233,7 +236,7 @@ const reducer = (state = initialState, action) => {
             }
 
             case LOAD_POST_SUCCESS: {
-                console.log('length : ', draft.mainPosts.length)
+                // console.log('length : ', draft.mainPosts.length)
                 // console.log('length : ', action.data.concat(draft.mainPosts).length)
                 draft.loadPostLoading = false;
                 draft.loadPostDone = true;

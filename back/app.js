@@ -28,10 +28,17 @@ const cors = require('cors')
 
 const bcrypt = require('bcrypt')
 
+const session = require('express-session')
+const cookieParser = require('cookie-parser')
+const passport = require('passport')
+const dotenv = require('dotenv')
+
+// passport 설정 가져오기
+const passportConfig = require('./passport/index')
+passportConfig()
 
 
 //시퀄라이즈 마지막으로 앱이랑 연결    !!! npx sequelize db:create 이거해서 디비부터 생성
-
 db.sequelize.sync()
     .then(() => {
         console.log('db connected')
@@ -39,12 +46,23 @@ db.sequelize.sync()
     .catch(console.error)
 
 
-// app.use(cors({
-//     origin: '*', //true로 하면 *대신 보낸곳의 주소가 자동으로 들어가 편리. //지금은 다 허용이지만 나중엔 내 도메인만
-//     credentials: false, // 나중에 true로 바꿔야됨
-// }))
 
-app.use(cors())
+// session cookie설정
+dotenv.config()
+app.use(cookieParser(process.env.COOKIE_SECRET))
+app.use(session({
+    saveUninitialized: false,
+    resave: false,
+    secret: process.env.COOKIE_SECRET,
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+
+app.use(cors({
+    origin: 'http://localhost:3060', //true로 하면 *대신 보낸곳의 주소가 자동으로 들어가 편리. //지금은 다 허용이지만 나중엔 내 도메인만
+    credentials: true, // 쿠키도 허용해줌
+}))
+
 
 // .use는 express에 뭔가 장착해서 넣어준다는건데 클라이언트에서 post put patch로 보내준 데이터를 해석해서 body에 넣어줌. use안에는 middleware넣어줌. 순서중요
 app.use(express.json()) // front안에 json으로 보냈을 때 req.body안에 json으로 넣어줌
@@ -63,19 +81,21 @@ app.post('/', (req, res) => {
     
 })
 
-app.post('/api/post', (req, res) => {
-    const aa = res.json([
-        {id:1, content: 'asdasd1'},
-        {id:2, content: 'asdasd2'},
-        {id:3, content: 'asdasd3'},
-        {id:4, content: 'asdasd4'},
-    ])
-    res.send(aa)
-})
+// app.post('/api/post', (req, res) => {
+//     const aa = res.json([
+//         {id:1, content: 'asdasd1'},
+//         {id:2, content: 'asdasd2'},
+//         {id:3, content: 'asdasd3'},
+//         {id:4, content: 'asdasd4'},
+//     ])
+//     res.send(aa)
+// })
 
 
 app.use('/post', postRouter)
 app.use('/user', userRouter)
+
+
 
 app.listen(3065, () => {
     console.log('server')

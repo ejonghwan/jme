@@ -10,7 +10,7 @@ import Router from 'next/router'
 const Signup = () => {
 
     const dispatch = useDispatch()
-    const { signupLoading, signupDone, signupError, initialState } = useSelector(state => state.user)
+    const { signupLoading, signupDone, signupError, initialState, me } = useSelector(state => state.user)
 
     const [email, handleEmailChange] = useInput('');
     const [nickname, handleNicknameChange] = useInput('');
@@ -41,15 +41,20 @@ const Signup = () => {
     }, [email, password, nickname])
 
     useEffect(() => {
+        if(me && me.id) {
+             Router.replace('/') //replace는 뒤로가기도 안됨 
+        }
+     }, [me && me.id])
+
+    useEffect(() => {
        if(signupDone) {
-            Router.push('/')
+            Router.replace('/')
        }
-      
     }, [signupDone])
 
     useEffect(() => {
         if(signupError) {
-             console.error(signupError)
+             alert(signupError)
         }
      }, [signupError])
 

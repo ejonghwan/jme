@@ -1,11 +1,84 @@
 const express = require('express');
-const { User } = require('../models') //module에 만든 User db
+const { User, Post } = require('../models') //module에 만든 User db
 const bcrypt = require('bcrypt');
 // const post = require('../models/post');
 const router = express.Router()
 
+const passport = require('passport');
+const user = require('../models/user');
+const db = require('../models');
 
-router.post('/', async (req, res, next) => { //POST /user/
+const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
+
+
+// cookie 사용자 정보 복구
+router.get('/', async (req, res, next) => {
+    try{
+        if(req.user) { //req.user가 있을 때만 응답을 해줌. 없으면 널 
+            const user = await User.findOne({
+                where: { id: req.user.id }
+            })
+            res.status(200).json(user)
+        } else {
+            res.status(200).json(null)
+        }
+        
+    } catch(error) {
+        console.error(error)
+        next(error)
+    }
+})
+
+
+router.post('/login', isNotLoggedIn,  async (req, res, next) => {
+    passport.authenticate('local', (serverErr, user, clientErr) => {
+        // console.log('req.body ? : ', req.body)
+        // local을 먼저 실행해서 LocalStrategy local에 이부분을 먼저 실행해주고 그다음 콜백부분을 실행
+        // 1. 서버에러, 2. 유저정보, 3. 클라이언트에러 
+        if(clientErr) {
+            console.error(clientErr)
+            return res.status(403).send(clientErr.reason)
+        }
+
+        if(serverErr) {
+            console.error(serverErr)
+            next(serverErr) //user.reason은 local에서 적은 유저안에 리즌
+        }
+
+        // 우리 로그인에서 로그인이 다 성공처리되면 passport에서 한버 더 로그인처리를 함
+        return req.login(user, async(loginErr) => { 
+            
+            if(loginErr) { // 이건 혹시나 passport에서 에러날까봐
+                console.log(loginErr)
+                return next(loginErr)
+            }
+
+            //res.setHeader('Cookie', '세션에서 암호화된 정보') 
+            const fullUserWithoutPassword = await User.findOne({
+                where: { id: user.id},
+                // attributes: ['id', 'nickname', 'email'],
+                attributes: { exclude: ['password'] }, //password만 빼고 보낸다는 의미
+
+                include: [{ //db에 연결한 관계들을 인클루드에 그대로 가져오면 됨
+                    model: Post, //hasMany라서 model: Post가 me.Posts가 됨. models의 user에 post 한명한테 묶어놓은 관계형에있음
+                }, {
+                    model: User,
+                    as: 'Followings', //as썻으면 as 써줘야됨
+                }, {
+                    model: User,
+                    as: 'Followers',
+                }]
+            })
+            return res.status(200).json(fullUserWithoutPassword)
+            // return res.status(200).json(user) //cookie랑 사용자 정보랑 프론트로 보내줌
+        })
+
+    })(req, res, next)
+})
+
+
+router.post('/', isNotLoggedIn, async (req, res, next) => { //POST /user/
+    // console.log('req? : ', req )
     try {
         // 중복찾기
         const exUser = await User.findOne({
@@ -31,13 +104,22 @@ router.post('/', async (req, res, next) => { //POST /user/
         //프론트를 프록시로 허용하게끔 하거나 npm i cors
         // res.setHeader('Access-Control-Allow-Origin', '*')
 
+
+
         //200 성공 300리다이렉트 400클라이언트 요청  500서버처리에러
         res.status(201).send('ok');
     } catch(error) {
         console.error(error)
-        next(error)
+        next(error) //express가 error 처리하게 보내줌 
     }
     
+})
+
+router.post('/logout', isLoggedIn, (req, res, next) => {
+    // req.user //이미 로그인 한 상태에선 req에 내 정보가 들어있음.
+    req.logout();
+    req.session.destroy();
+    res.send('ok')
 })
 
 module.exports = router;

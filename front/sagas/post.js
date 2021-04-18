@@ -1,6 +1,6 @@
 
 import { all, call, delay, fork, put, takeLatest } from "@redux-saga/core/effects";
-import Axios from 'axios'
+import axios from 'axios'
 
 import {
     ADD_POST_REQUEST, ADD_POST_SUCCESS, ADD_POST_FAILURE,
@@ -18,27 +18,27 @@ function randomKey() {
 }
 
 function addpostAPI(data) {
-    return Axios.get('/api/addpost', data)
+    return axios.post('/post', { content: data })
 }
 
-
 function* addpost(action) {
-    // const result = yield call(addpostAPI, action.data) 
-    yield delay(1000)
-    const id = randomKey()
+    const result = yield call(addpostAPI, action.data) 
+    // yield delay(1000)
+    // const id = randomKey()
     try {
         yield put({
             type: ADD_POST_SUCCESS,
-            // data: result.data,
-            data: {
-                id,
-                content: action.data,
-            }
+            data: result.data,
+            // data: {
+            //     id,
+            //     content: action.data,
+            // }
+
         })
 
         yield put({
             type: ADD_POST_TO_ME,
-            data: id,
+            data: result.data.id,
         })
 
     } catch(err) {
@@ -71,15 +71,18 @@ function* removePost(action) {
 }
 
 
+function addCommentAPI(data) {
+    return axios.get(`/post/${data.postId}/comment`, data) // post/post/1/comment
+}
 
 function* addComment(action) {
-    // const result = yield call(addpostAPI, action.data) 
-    yield delay(1000)
+    const result = yield call(addCommentAPI, action.data) 
+    // yield delay(1000)
     try {
         yield put({
             type: ADD_COMMENT_SUCCESS,
-            // data: result.data,
-            data: action.data,
+            data: result.data,
+            // data: action.data,
         })
     } catch(err) {
         yield put({

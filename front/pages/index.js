@@ -5,6 +5,7 @@ import PostCard from '../components/PostCard.js'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { LOAD_POST_REQUEST } from '../reducers/post.js';
+import { LOAD_MY_INFO_REQUEST } from '../reducers/user.js';
 
 
 
@@ -18,6 +19,9 @@ const index = () => {
     // console.log(me)
 
     useEffect(() => {
+        dispatch({
+            type: LOAD_MY_INFO_REQUEST
+        })
         if(infiniteLimit) {
             dispatch({ type: LOAD_POST_REQUEST })
         }
@@ -34,7 +38,7 @@ const index = () => {
                 // console.log('^^')
                 dispatch({ type: LOAD_POST_REQUEST })
             }
-            console.log(infiniteLimit)
+            // console.log(infiniteLimit)
         }
         window.addEventListener('scroll', infiniteScroll);
         return () => {

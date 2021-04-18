@@ -23,23 +23,29 @@ export const initialState = {
     unfollowLoading: false,
     unfollowDone: false,
     unfollowError: null,
+    loadMyInfoLoading: false, //유저정보 가져오기
+    loadMyInfoDone: false,
+    loadMyInfoError: null,
 }
 
-const dummyUser = data => ({
-    ...data,
-    nickname: 'jjong',
-    Posts: [{id: 1}, ],
-    Followings: [{nickname: 'a'},{nickname: 'b'},{nickname: 'c'},{nickname: 'd'},{nickname: 'e'},{nickname: 'f'},],
-    Followers: [{nickname: 'a'},{nickname: 'b'},{nickname: 'c'},{nickname: 'd'},{nickname: 'e'},{nickname: 'f'},],
-})
+// const dummyUser = data => ({
+//     ...data,
+//     nickname: 'jjong',
+//     Posts: [{id: 1}, ],
+//     Followings: [{nickname: 'a'},{nickname: 'b'},{nickname: 'c'},{nickname: 'd'},{nickname: 'e'},{nickname: 'f'},],
+//     Followers: [{nickname: 'a'},{nickname: 'b'},{nickname: 'c'},{nickname: 'd'},{nickname: 'e'},{nickname: 'f'},],
+// })
 
 
+export const LOAD_MY_INFO_REQUEST = "LOAD_MY_INFO_REQUEST"
+export const LOAD_MY_INFO_SUCCESS = "LOAD_MY_INFO_SUCCESS"
+export const LOAD_MY_INFO_FAILURE = "LOAD_MY_INFO_FAILURE"
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST"
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS"
 export const LOGIN_FAILURE = "LOGIN_FAILURE"
 
-export const LOGOUT_REQUEST = "LOGIN_FAILURE"
+export const LOGOUT_REQUEST = "LOGOUT_REQUEST"
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS"
 export const LOGOUT_FAILURE = "LOGOUT_FAILURE"
 
@@ -81,6 +87,28 @@ const reducer = (state = initialState, action) => {
     return produce(state, (draft) => {
         switch(action.type) {
 
+            case LOAD_MY_INFO_REQUEST: {
+                draft.loadMyInfoLoading = true;
+                draft.loadMyInfoDone = false;
+                draft.loadMyInfoError = null;
+                break;
+            }
+
+            case LOAD_MY_INFO_SUCCESS: {
+                draft.loadMyInfoLoading = false;
+                draft.loadMyInfoDone = true;
+                draft.me = action.data;
+                draft.loadMyInfoError = null
+                break;
+            }
+
+            case LOAD_MY_INFO_FAILURE: {
+                draft.loadMyInfoLoading = false;
+                draft.loadMyInfoDone = false;
+                draft.loadMyInfoError = action.error;
+                break;
+            }
+
             case LOGIN_REQUEST: {
                 draft.loginLoading = true;
                 draft.loginDone = false;
@@ -98,6 +126,7 @@ const reducer = (state = initialState, action) => {
 
             case LOGIN_FAILURE: {
                 draft.loginLoading = false;
+                draft.loginDone = false;
                 draft.loginError = action.error;
                 break;
             }
@@ -118,6 +147,7 @@ const reducer = (state = initialState, action) => {
 
             case LOGOUT_FAILURE: {
                 draft.logoutLoading = false;
+                draft.logoutDone = false;
                 draft.logoutError = action.error;
                 break;
             }

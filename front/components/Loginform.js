@@ -7,19 +7,20 @@ import { login_action, logout_action, login_request_action }from '../reducers/us
 const Loginform = () => {
 
     const dispatch = useDispatch()
+    const { loginLoading, loginError } = useSelector(state => state.user)
 
-    const [userId, serUserId] = useState('');
-    const [userPassword, setUserPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
     const handleChange = useCallback(e => {
             const { target: {name, value} } = e;
             switch(name) {
                 case "user_id": 
-                    serUserId(value);
+                    setEmail(value);
                     break;
     
                 case "user_password": 
-                    setUserPassword(value);
+                    setPassword(value);
                     break;
     
                 default: false
@@ -29,11 +30,17 @@ const Loginform = () => {
     const handleSubmit = useCallback(e => {
         e.preventDefault();
         // setIsLoggedIn(true)
-        dispatch(login_request_action({userId, userPassword}))
-        console.log(userId, userPassword)
+        dispatch(login_request_action({email, password}))
+        console.log(email, password)
 
-    }, [userId, userPassword])
+    }, [email, password])
 
+    
+    useEffect(() => {
+        if(loginError) {
+            alert(loginError)
+        }
+    }, [loginError])
 
 
     return (
@@ -43,7 +50,7 @@ const Loginform = () => {
                 <input 
                     name="user_id" 
                     type="email"
-                    value={userId} 
+                    value={email} 
                     onChange={handleChange} 
                     required 
                 />
@@ -53,7 +60,7 @@ const Loginform = () => {
                 <input 
                     type="password"
                     name="user_password" 
-                    value={userPassword} 
+                    value={password} 
                     onChange={handleChange} 
                     required 
                 />
