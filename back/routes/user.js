@@ -11,12 +11,21 @@ const db = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 
-// cookie 사용자 정보 복구
+// 새로고침 시 cookie 사용자 정보 복구
 router.get('/', async (req, res, next) => {
     try{
         if(req.user) { //req.user가 있을 때만 응답을 해줌. 없으면 널 
             const user = await User.findOne({
-                where: { id: req.user.id }
+                where: { id: req.user.id },
+                include: [{ //db에 연결한 관계들을 인클루드에 그대로 가져오면 됨
+                    model: Post, //hasMany라서 model: Post가 me.Posts가 됨. models의 user에 post 한명한테 묶어놓은 관계형에있음
+                }, {
+                    model: User,
+                    as: 'Followings', //as썻으면 as 써줘야됨
+                }, {
+                    model: User,
+                    as: 'Followers',
+                }]
             })
             res.status(200).json(user)
         } else {

@@ -93,12 +93,18 @@ function* addComment(action) {
 }
 
 
+function loadPostAPI(data) {
+    return axios.get('/posts', data)
+}
+
 function* loadPost(action) {
-    yield delay(1000);
+    // yield delay(1000);
     try {
+        const result = yield call(loadPostAPI, action.data) 
         yield put({
             type: LOAD_POST_SUCCESS,
-            data: generaterDummyPost(10)
+            // data: generaterDummyPost(10)
+            data: result.data,
         })
     } catch (err) {
         yield put({

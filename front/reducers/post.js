@@ -23,30 +23,30 @@ export const initialState = {
 }
 
 
-export const generaterDummyPost = lengthData => {
-    return Array(lengthData).fill().map(() => {
-        return {
-            id: randomKey(),
-            User: {
-                id: randomKey(),
-                nickname: faker.name.findName(),
-            },
-            content: faker.lorem.paragraph(),
-            Images: [
-                {src: faker.image.image()},
-                {src: faker.image.image()},
-                {src: faker.image.image()},
-            ],
-            Comments: [{
-                User: {
-                    id: randomKey(),
-                    nickname: faker.name.findName(),
-                },
-                content: faker.lorem.sentence(),
-            }],
-        }
-    })
-}
+// export const generaterDummyPost = lengthData => {
+//     return Array(lengthData).fill().map(() => {
+//         return {
+//             id: randomKey(),
+//             User: {
+//                 id: randomKey(),
+//                 nickname: faker.name.findName(),
+//             },
+//             content: faker.lorem.paragraph(),
+//             Images: [
+//                 {src: faker.image.image()},
+//                 {src: faker.image.image()},
+//                 {src: faker.image.image()},
+//             ],
+//             Comments: [{
+//                 User: {
+//                     id: randomKey(),
+//                     nickname: faker.name.findName(),
+//                 },
+//                 content: faker.lorem.sentence(),
+//             }],
+//         }
+//     })
+// }
 
 
 // export const dummyPost = data => ({
