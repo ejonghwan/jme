@@ -12,7 +12,10 @@ router.get('/', async (req, res, next) => { //posts
         const posts = await Post.findAll({ //lastId limit 방식
             limit: 10, //10개만 가져와라
             // offset: 100, // 101~ 110번까지 가져와라. 근데 문제가 있음, 중간에 추가됐을 때 
-            order: [['createdAt', 'DESC']], // DESC 내림차순, ASC 오름차순
+            order: [
+                ['createdAt', 'DESC'],
+                [Comment, 'createdAt', 'DESC']
+            ], // DESC 내림차순, ASC 오름차순
             // where: { id: lastId }, //조건 where: {userId: 1} 1번 아이디를 가진 사람의 글을 모두 가져와라 
             include: [{
                 model: User,
@@ -21,12 +24,10 @@ router.get('/', async (req, res, next) => { //posts
                 model: Image,
             }, {
                 model: Comment,
-                include: [
-                    {
+                include: [{
                         model: User,
-                        attributes: { exclude: ['password'] }
-                    }
-                ]
+                        attributes: ['id', 'nickname']
+                    }]
             }]
         })
         console.log(posts)

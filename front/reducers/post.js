@@ -87,14 +87,14 @@ export const initialState = {
 //     })
 // )
 
-export const dummyComment = data => ({
-    id: randomKey(),
-    content: data,
-    User: {
-        id:"jjongrrr",
-        nickname: 'comment name',
-    },
-})
+// export const dummyComment = data => ({
+//     id: randomKey(),
+//     content: data,
+//     User: {
+//         id:"jjongrrr",
+//         nickname: 'comment name',
+//     },
+// })
 
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST"
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS"
@@ -190,7 +190,7 @@ const reducer = (state = initialState, action) => {
              }
 
              case ADD_COMMENT_REQUEST: {
-                 console.log(action)
+                 console.log('sibal:', action.data.postId)
                 draft.addCommentLoading = true;
                 draft.addCommentDone = false;
                 draft.addCommentError = null;
@@ -199,11 +199,12 @@ const reducer = (state = initialState, action) => {
          
     
             case ADD_COMMENT_SUCCESS: {
-                // const post = draft.mainPosts.find(val => val.id === action.data.postId); //find는 객체 바로 
-                const post = draft.mainPosts.filter(val => val.id === action.data.PostId); //filter는 배열로 반환해줌
-                console.log('post: ', post)
+                const post = draft.mainPosts.find(val => val.id === action.data.PostId); //find는 객체 바로. 통신성공했을 때 db에서 들어오는 데이터라 대문자
+                // const post = draft.mainPosts.filter(val => val.id === action.data.postId); //filter는 배열로 반환해줌
+                // console.log('post: ', post)
                 // post[0].Comments.unshift(dummyComment(action.data.content));
-                post[0].Comments.unshift(action.data.content);
+                console.log(post)
+                post.Comments.unshift(action.data);
                 draft.addCommentLoading = false;
                 draft.addCommentDone = true;
                 draft.addCommentError = null;
