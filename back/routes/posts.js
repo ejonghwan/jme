@@ -28,6 +28,10 @@ router.get('/', async (req, res, next) => { //posts
                         model: User,
                         attributes: ['id', 'nickname']
                     }]
+            }, {// 불러오는 데이터에도 좋아요한 뎁스 넣어주기
+                model: User, //좋아요 한 유저
+                as: 'Likers', // db model에서 만든 as 꼭 넣어주기
+                attributes: ['id'],
             }]
         })
         console.log(posts)

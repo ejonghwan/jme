@@ -19,6 +19,12 @@ export const initialState = {
     addCommentLoading: false,
     addCommentDone: false,
     addCommentError: null,
+    likePostLoading: false,
+    likePostDone: false,
+    likePostError: null,
+    unlikePostLoading: false,
+    unlikePostDone: false,
+    unlikePostError: null,
     
 }
 
@@ -112,6 +118,13 @@ export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST"
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS"
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE"
 
+export const LIKE_POST_REQUEST = "LIKE_POST_REQUEST"
+export const LIKE_POST_SUCCESS = "LIKE_POST_SUCCESS"
+export const LIKE_POST_FAILURE = "LIKE_POST_FAILURE"
+
+export const UNLIKE_POST_REQUEST = "UNLIKE_POST_REQUEST"
+export const UNLIKE_POST_SUCCESS = "UNLIKE_POST_SUCCESS"
+export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE"
 
 function randomKey() {
     return Math.random().toString(36).substr(2)
@@ -254,6 +267,56 @@ const reducer = (state = initialState, action) => {
                 draft.loadPostError = action.data.error;
                 break
             }
+
+            case LIKE_POST_REQUEST: {
+                draft.likePostLoading = true;
+                draft.likePostDone = false;
+                draft.likePostError = null;
+                break
+             }
+ 
+             case LIKE_POST_SUCCESS: {
+                 const post = draft.mainPosts.find(val => val.id === action.data.PostId)  //back에서 보내준 PostId / UserId 이용해서 같은 게시물 찾기
+                 post.Likers.push({ id: action.data.UserId }) //post routes include에서 Likers 추가해. 
+                 draft.likePostLoading = false;
+                 draft.likePostDone = true;
+                 draft.likePostError = null;
+                 break
+              }
+ 
+              case LIKE_POST_FAILURE: {
+                 draft.likePostLoading = false;
+                 draft.likePostDone = false;
+                 draft.likePostError = action.error;
+                 break
+              }
+
+              case UNLIKE_POST_REQUEST: {
+                draft.unlikePostLoading = true;
+                draft.unlikePostDone = false;
+                draft.unlikePostError = null;
+                break
+             }
+ 
+             case UNLIKE_POST_SUCCESS: {
+                 console.log('un:', action.data)
+                const post = draft.mainPosts.find(val => val.id === action.data.PostId) //back에서 보내준 PostId / UserId 이용해서 같은 게시물 찾기
+                post.Likers = post.Likers.filter(val => val.id !== action.data.UserId) //지울땐 Likers가 배열이니 거기안에 id중에 내 아이디랑 같은게 있으면 없애기
+                console.log('post:', post.Likers)
+                 draft.unlikePostLoading = false;
+                 draft.unlikePostDone = true;
+                 draft.unlikePostError = null;
+                 break
+              }
+ 
+              case UNLIKE_POST_FAILURE: {
+                 draft.unlikePostLoading = false;
+                 draft.unlikePostDone = false;
+                 draft.unlikePostError = action.error;
+                 break
+              }
+
+
             default: break   
         }
     })

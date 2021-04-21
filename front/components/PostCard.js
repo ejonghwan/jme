@@ -6,6 +6,7 @@ import CommentList from './CommentList.js'
 import FollowButton from './FollowButton.js'
 import PostCardContent from './PostCardContent.js'
 import { removePost } from '../reducers/post'
+import { LIKE_POST_REQUEST, UNLIKE_POST_REQUEST } from '../reducers/post'
 
 
 
@@ -15,14 +16,35 @@ const PostCard = ({ data }) => {
     const dispatch = useDispatch()
 
     const { me } = useSelector(state => state.user )
-    const id = me && me.userId
+    const id = me && me.id
     
-    const [like, setLike] = useState(false)
+    const like = data.Likers.find(val => val.id === id) //data (mainPosts) 에 Likers에 내 아이디가 있으면 
+
+    // const [like, setLike] = useState(false)
     const [comment, setComment] = useState(false)
     const handleToggle = useCallback(e => {
-        if(e.target.name === 'like') setLike(prev => !prev)
         if(e.target.name === 'comment') setComment(prev => !prev)
     })
+
+    useEffect(() => {
+        // console.log('data: ', data)
+        console.log('id??:', id)
+        console.log('me??:', me)
+    }, [])
+
+    const onLike = useCallback(() => {
+        dispatch({
+            type: LIKE_POST_REQUEST,
+            data: data.id,
+        })
+    }, [])
+    const onUnlike = useCallback(() => {
+        dispatch({
+            type: UNLIKE_POST_REQUEST,
+            data: data.id,
+        })
+        // console.log(data.id) // 내가누른 게시글의 id를 보내줌
+    }, [])
 
 
     const handleRemoveValue = e => {
@@ -43,9 +65,9 @@ const PostCard = ({ data }) => {
             <div>{<PostCardContent data={data.content}/>}</div>
             <button>리트윗</button>
             {!like ? (
-                <button name="like" onClick={handleToggle} style={{color: 'black'}}>좋아요</button>
+                <button name="like" onClick={onLike} style={{color: 'black'}}>좋아요</button>
             ) : (
-                <button name="like" onClick={handleToggle} style={{color: 'red'}}>좋아요</button>
+                <button name="like" onClick={onUnlike} style={{color: 'red'}}>좋아요 취소</button>
             )}
             <button name="comment" onClick={handleToggle}>댓글펼치기</button>
             {id && data.User.id === id ? (

@@ -8,6 +8,9 @@ import {
     REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE, REMOVE_POST_REQUEST, 
     LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE,
     generaterDummyPost,
+    LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
+    UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE,
+    
 } from '../reducers/post'
 
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME} from '../reducers/user'
@@ -116,6 +119,45 @@ function* loadPost(action) {
     }
 }
 
+function likePostAPI(data) {
+    return axios.patch(`/post/${data}/like`) //데이터는 인자로 안넣어도 됨. 요청에 있기 때문에 post/:postId/like 로 가져올수있음. req.params.postId 
+}
+function* likePost(action) {
+    try {
+        const result = yield call(likePostAPI, action.data)
+        yield put({
+            type: LIKE_POST_SUCCESS,
+            data: result.data,
+        })
+    } catch(err) {
+        console.error(err)
+        yield put({
+            type: LIKE_POST_FAILURE,
+            error: err.response.data
+        })
+    }
+}
+
+function unlikePostAPI(data) {
+    return axios.delete(`/post/${data}/unlike`)
+}
+function* unlikePost(action) {
+    try {
+        const result = yield call(unlikePostAPI, action.data)
+        yield put({
+            type: UNLIKE_POST_SUCCESS,
+            data: result.data,
+        })
+    } catch(err) {
+        console.error(err)
+        yield put({
+            type: UNLIKE_POST_FAILURE,
+            error: err.response.error
+        })
+    }
+}
+
+
 
 
 
@@ -135,6 +177,14 @@ function* watchloadPost() {
     yield takeLatest(LOAD_POST_REQUEST, loadPost)
 }
 
+function* watchlikePost() {
+    yield takeLatest(LIKE_POST_REQUEST, likePost)
+}
+
+function* watchunlikePost() {
+    yield takeLatest(UNLIKE_POST_REQUEST, unlikePost)
+}
+
 
 
 export default function* postSaga() {
@@ -143,5 +193,7 @@ export default function* postSaga() {
         fork(watchRemovePost),
         fork(watchAddComment),
         fork(watchloadPost),
+        fork(watchlikePost),
+        fork(watchunlikePost),
     ])
 }
