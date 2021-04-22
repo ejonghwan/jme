@@ -110,8 +110,24 @@ router.delete('/:postId/unlike', isLoggedIn, async (req, res, next) => {
 })
 
 
-router.delete('/', (req, res) => { // DELETE /post
-    res.json({ id: 1 })
+router.delete('/:postId/delete', async (req, res, next) => { // DELETE /post
+    try {
+        const post = await Post.destroy({ // 시퀄라이즈에선 제거할때 destroy 씀
+            where: { id: req.params.postId }
+        })
+
+        if(!post) {
+            return res.status(401).send('게시물이 없습니다.')
+        }
+
+        await Post.removePosts(post.id)
+        res.status(200).json({ PostId: req.params.PostId })
+        
+    } catch(error) {
+        console.error(error);
+        next(error);
+    }
+    
 });
 
 module.exports = router;

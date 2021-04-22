@@ -131,4 +131,8 @@ router.post('/logout', isLoggedIn, (req, res, next) => {
     res.send('ok')
 })
 
+
+// nickname 수정
+
+
 module.exports = router;

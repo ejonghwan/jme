@@ -28,8 +28,8 @@ const PostCard = ({ data }) => {
 
     useEffect(() => {
         // console.log('data: ', data)
-        console.log('id??:', id)
-        console.log('me??:', me)
+        // console.log('id??:', id)
+        // console.log('me??:', me)
     }, [])
 
     const onLike = useCallback(() => {
