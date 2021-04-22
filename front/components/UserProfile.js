@@ -4,7 +4,7 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { login_action, logout_action, logout_request_action}from '../reducers/user.js'
 
-
+import NicknameEditForm from './NicknameEditForm'
 
 const UserProfile = ({ setIsLoggedIn }) => {
 
@@ -30,7 +30,7 @@ const UserProfile = ({ setIsLoggedIn }) => {
                 <li>followers: <span>{me.Followers.length}</span></li>
             </ul>
             <button onClick={handleLogout}>logout</button>
-             
+             <NicknameEditForm />
         </div>
     );
 };

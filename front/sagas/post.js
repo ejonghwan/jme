@@ -52,13 +52,19 @@ function* addpost(action) {
     }
 }
 
+function removePostAPI(data) {
+    return axios.delete(`/post/${data}/delete`) //delete는 두번째 인자에 data 못넣음. 요청패스에 넣으몀ㄴ 됨 ㅎㅎ
+}
+
 function* removePost(action) {
-    // const result = yield call(addPostAPI, action.data)
-    yield delay(1000)
+    
     try {
+        const result = yield call(removePostAPI, action.data)
+        // yield delay(1000)
         yield put({
             type: REMOVE_POST_SUCCESS,
-            data: action.data, 
+            // data: action.data, 
+            data: result.data,
         })
 
         yield put({

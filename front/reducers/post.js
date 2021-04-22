@@ -126,6 +126,8 @@ export const UNLIKE_POST_REQUEST = "UNLIKE_POST_REQUEST"
 export const UNLIKE_POST_SUCCESS = "UNLIKE_POST_SUCCESS"
 export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE"
 
+
+
 function randomKey() {
     return Math.random().toString(36).substr(2)
 }
@@ -189,7 +191,7 @@ const reducer = (state = initialState, action) => {
              }
              
              case REMOVE_POST_SUCCESS: {
-                draft.mainPosts = state.mainPosts.filter(val => val.id !== action.data);
+                draft.mainPosts = draft.mainPosts.filter(val => val.id !== action.data.PostId); //back에서 넘겨줄땐 대문자로 규칙정함
                 draft.removePostLoading = false;
                 draft.removePostDone = true;
                 draft.removePostError = null;

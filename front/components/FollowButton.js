@@ -30,6 +30,11 @@ const FollowButton = ({ data }) => {
         
     }
 
+    if(me.id === data.User.id) {
+        return null
+    }
+  
+
 
     return (
         <div>

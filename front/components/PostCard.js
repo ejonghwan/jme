@@ -51,6 +51,7 @@ const PostCard = ({ data }) => {
         dispatch(removePost(data.id))
     }
 
+
     // useEffect(() => {
     //     console.log(id)
     // }, [id])

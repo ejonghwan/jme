@@ -38,7 +38,7 @@ router.get('/', async (req, res, next) => {
     }
 })
 
-
+// 로그인 인증
 router.post('/login', isNotLoggedIn,  async (req, res, next) => {
     passport.authenticate('local', (serverErr, user, clientErr) => {
         // console.log('req.body ? : ', req.body)
@@ -85,7 +85,7 @@ router.post('/login', isNotLoggedIn,  async (req, res, next) => {
     })(req, res, next)
 })
 
-
+//가입
 router.post('/', isNotLoggedIn, async (req, res, next) => { //POST /user/
     // console.log('req? : ', req )
     try {
@@ -133,6 +133,19 @@ router.post('/logout', isLoggedIn, (req, res, next) => {
 
 
 // nickname 수정
+router.patch('/nickname', isLoggedIn, async (req, res, next) => {
+    try {
+        await User.update({ // 수정해라 update
+                nickname: req.body.nickname, //프론트에서 넘어온 아이디를 .위로 
+            }, {
+                where: { id: req.user.id } //조건. 내 아이디의 .위로
+            })
 
+        res.status(200).json({ nickname: req.body.nickname })
+    } catch(error) {
+        console.error(error)
+        next(error)
+    }
+})
 
 module.exports = router;

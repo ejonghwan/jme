@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link'
-
 import { useDispatch, useSelector } from 'react-redux'
 import { login_action, logout_action, login_request_action }from '../reducers/user.js'
 
@@ -69,6 +68,7 @@ const Loginform = () => {
             
             <button type="submit">login</button>
             <Link href="/signup"><a>singup</a></Link>
+            
         </form>
     );
 };
