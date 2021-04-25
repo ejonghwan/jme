@@ -26,6 +26,12 @@ export const initialState = {
     loadMyInfoLoading: false, //유저정보 가져오기
     loadMyInfoDone: false,
     loadMyInfoError: null,
+    loadFollowersLoading: false, 
+    loadFollowersDone: false,
+    loadFollowersError: null,
+    loadFollowingsLoading: false, 
+    loadFollowingsDone: false,
+    loadFollowingsError: null,
 }
 
 // const dummyUser = data => ({
@@ -67,6 +73,15 @@ export const UNFOLLOW_FAILURE = "UNFOLLOW_FAILURE"
 
 export const ADD_POST_TO_ME = "ADD_POST_TO_ME"
 export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME"
+
+export const LOAD_FOLLOWERS_REQUEST = "LOAD_FOLLOWERS_REQUEST"
+export const LOAD_FOLLOWERS_SUCCESS = "LOAD_FOLLOWERS_SUCCESS"
+export const LOAD_FOLLOWERS_FAILURE = "LOAD_FOLLOWERS_FAILURE"
+
+export const LOAD_FOLLOWINGS_REQUEST = "LOAD_FOLLOWINGS_REQUEST"
+export const LOAD_FOLLOWINGS_SUCCESS = "LOAD_FOLLOWINGS_SUCCESS"
+export const LOAD_FOLLOWINGS_FAILURE = "LOAD_FOLLOWINGS_FAILURE"
+
 
 export const login_request_action = (data) => {
     return {
@@ -213,7 +228,7 @@ const reducer = (state = initialState, action) => {
                 draft.followLoading = false;
                 draft.followDone = true;
                 draft.followError = null;
-                draft.me.Followings.push(action.data)
+                draft.me.Followings.push({ id: action.data.UserId })
                 break
             }
 
@@ -236,7 +251,7 @@ const reducer = (state = initialState, action) => {
                 draft.unfollowLoading = false;
                 draft.unfollowDone = true;
                 draft.unfollowError = null;
-                draft.me.Followings = draft.me.Followings.filter(val => val.id !== action.data.id)
+                draft.me.Followings = draft.me.Followings.filter(val => val.id !== action.data.UserId)
                 break
             }
 
@@ -245,6 +260,50 @@ const reducer = (state = initialState, action) => {
                 draft.unfollowDone = false;
                 draft.unfollowError = action.data.error;
                 break
+            }
+
+            case LOAD_FOLLOWERS_REQUEST: {
+                draft.loadFollowersLoading = true;
+                draft.loadFollowersDone = false;
+                draft.loadFollowersError = null;
+                break;
+            }
+
+            case LOAD_FOLLOWERS_SUCCESS: {
+                draft.loadFollowersLoading = false;
+                draft.loadFollowersDone = true;
+                draft.me.Followers = action.data;
+                draft.loadFollowersError = null
+                break;
+            }
+
+            case LOAD_FOLLOWERS_FAILURE: {
+                draft.loadFollowersLoading = false;
+                draft.loadFollowersDone = false;
+                draft.loadFollowersError = action.error;
+                break;
+            }
+
+            case LOAD_FOLLOWINGS_REQUEST: {
+                draft.loadFollowingsLoading = true;
+                draft.loadFollowingsDone = false;
+                draft.loadFollowingsError = null;
+                break;
+            }
+
+            case LOAD_FOLLOWINGS_SUCCESS: {
+                draft.loadFollowingsLoading = false;
+                draft.loadFollowingsDone = true;
+                draft.me.Followings = action.data;
+                draft.loadFollowingsError = null
+                break;
+            }
+
+            case LOAD_FOLLOWINGS_FAILURE: {
+                draft.loadFollowingsLoading = false;
+                draft.loadFollowingsDone = false;
+                draft.loadFollowingsError = action.error;
+                break;
             }
 
             default: break;                 

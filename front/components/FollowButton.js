@@ -10,27 +10,29 @@ const FollowButton = ({ data }) => {
     const dispatch = useDispatch()
     const { me } = useSelector(state => state.user)
 
+    // 내 Followings에 있는 id랑 게시물 작성자 id랑 같으면 넣어줌 
+    const isFollowing = me && me.Followings.find(val => val.id === data.User.id);
 
+    
     const followClick = e => {
         e.preventDefault()
         
-        if(me.Followings.find(val => val.id === data.id)) {
-            setFollow(false)
+        if(isFollowing) {
+            // setFollow(false)
             dispatch({
                 type: UNFOLLOW_REQUEST,
-                data: { id: data.id }
+                data: data.User.id
             })
         } else {
-            setFollow(true)
+            // setFollow(true)
             dispatch({
                 type: FOLLOW_REQUEST,
-                data: { id: data.id }
+                data: data.User.id
             })
         }
-        
     }
 
-    if(me.id === data.User.id) {
+    if(me && me.id === data.User.id) {
         return null
     }
   
@@ -39,7 +41,7 @@ const FollowButton = ({ data }) => {
     return (
         <div>
             {me && <>
-                {follow ? (
+                {isFollowing ? (
                     <div><a href="" onClick={followClick}>unfollow</a></div>
                 ): (
                     <div><a href="" onClick={followClick}>follow</a></div>

@@ -148,4 +148,129 @@ router.patch('/nickname', isLoggedIn, async (req, res, next) => {
     }
 })
 
+router.patch('/:userId/follow', isLoggedIn, async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: { id: req.params.userId }
+        })
+
+        // const fullUser = await User.findOne({
+        //     where: { id: user.id },
+        //     include: [{
+        //         model: User,
+        //         attributes: ['id', 'nickname'],
+        //         as: 'Followers',
+        //     }]
+        // })
+
+        if(!user) {
+            return res.status(403).send('유저가 없습니다')
+        } 
+
+        // user.addFollowers(fullUser)
+        // res.status(200).json(fullUser)
+        await user.addFollowers(user.id)
+        res.status(200).json({ UserId: user.id })
+
+        
+    } catch(error) {
+        console.error(error)
+        next(error)
+    }
+})
+
+
+router.delete('/:userId/unfollow', isLoggedIn, async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: { id: req.params.userId }
+        })
+    
+        if(!user) {
+            return res.status(403).send('유저가 없습니다')
+        }
+    
+        await user.removeFollowers(req.params.userId)
+        res.status(200).json({ UserId: parseInt(req.params.userId) })
+        
+    } catch(error) {
+        console.error(error)
+        next(error)
+    }
+
+})
+
+router.patch('/followers', isLoggedIn, async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: { id: req.user.id },
+            // include: [{
+            //     model: User,
+            //     attributes: ['id', 'nickname'],
+            //     as: 'Followers',
+            // }]
+        })
+
+        if(!user) {
+            return res.status(403).send('유저가 없습니다')
+        } 
+
+        console.log(user)
+        const followers = await user.getFollowers()
+        res.status(200).json(followers)
+        // res.status(200).json([{id: 1}])
+
+        
+    } catch(error) {
+        console.error(error)
+        next(error)
+    }
+})
+
+
+router.patch('/followings', isLoggedIn, async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: { id: req.user.id },
+            // include: [{
+            //     model: User,
+            //     attributes: ['id', 'nickname'],
+            //     as: 'Followings',
+            // }]
+        })
+        if(!user) {
+            return res.status(403).send('유저가 없습니다')
+        } 
+        const followings = await user.getFollowings()
+        res.status(200).json(followings)
+
+        
+    } catch(error) {
+        console.error(error)
+        next(error)
+    }
+})
+
+
 module.exports = router;
+
+
+
+// {
+//     "id":10,
+//     "email":"whdghks1@naver.com",
+//     "nickname":"whdghks1",
+//     "password":"$2b$10$ywUt7l89XqdOWszSCJucd.LGcuGcDdMOjg4cyK1YO8LZ2BE757yFS",
+//     "createdAt":"2021-04-24T05:50:18.000Z",
+//     "updatedAt":"2021-04-24T05:50:18.000Z",
+//     "Followers":[
+//         {
+//             "id":10,
+//             "nickname":"whdghks1",
+//             "Follow":{
+//                 "createdAt":"2021-04-24T05:54:08.000Z",
+//                 "updatedAt":"2021-04-24T05:54:08.000Z",
+//                 "UserId":10}
+//             }
+//         ]
+//     }

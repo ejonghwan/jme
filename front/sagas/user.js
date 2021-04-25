@@ -8,7 +8,7 @@ import {
     LOGOUT_SUCCESS, LOGOUT_FAILURE,LOGOUT_REQUEST,
     SIGNUP_REQUEST, SIGNUP_SUCCESS, SiGNUP_FAILURE,  
     FOLLOW_FAILURE, FOLLOW_REQUEST, FOLLOW_SUCCESS,
-    UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, CHANGE_NICKNAME_REQUEST, CHANGE_NICKNAME_FAILURE, CHANGE_NICKNAME_SUCCESS,
+    UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, CHANGE_NICKNAME_REQUEST, CHANGE_NICKNAME_FAILURE, CHANGE_NICKNAME_SUCCESS, LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_FOLLOWINGS_SUCCESS, LOAD_FOLLOWERS_SUCCESS, LOAD_FOLLOWERS_FAILURE, LOAD_FOLLOWINGS_FAILURE,
 } from '../reducers/user'
 
 
@@ -102,36 +102,6 @@ function* signup(action) {
 }
 
 
-function* follow(action) {
-    yield delay(1000);
-    try {
-        yield put({
-            type: FOLLOW_SUCCESS,
-            data: action.data,
-        })
-    } catch (err) {
-        yield put({
-            type: FOLLOW_FAILURE,
-            error: err.response.data
-        })
-    }
-}
-
-
-function* unfollow(action) {
-    yield delay(1000);
-    try {
-        yield put({
-            type: UNFOLLOW_SUCCESS,
-            data: action.data
-        })
-    } catch (err) {
-        yield put({
-            type: UNFOLLOW_FAILURE,
-            error: err.response.data
-        })
-    }
-}
 
 
 function changeNicknameAPI(data) {
@@ -153,6 +123,89 @@ function* changenickname(action) {
     }
 }
 
+function followAPI(data) {
+    return axios.patch(`/user/${data}/follow`)
+}
+
+function* follow(action) {
+    try{
+        const result = yield call(followAPI, action.data);
+        yield put({
+            type: FOLLOW_SUCCESS,
+            data: result.data,
+        })
+    } catch (err) {
+        console.error(err)
+        yield put({
+            type: FOLLOW_FAILURE,
+            error: err.response.data,
+        })
+    }
+}
+
+function unfollowAPI(data) {
+    return axios.delete(`/user/${data}/unfollow`)
+}
+
+function* unfollow(action) {
+    try {
+        const result = yield call(unfollowAPI, action.data)
+        yield put({
+            type: UNFOLLOW_SUCCESS,
+            data: result.data
+        })
+    } catch (err) {
+        console.error(err)
+        yield put({
+            type: UNFOLLOW_FAILURE,
+            error: err.response.data
+        })
+    }
+}
+
+function loadfollowingsAPI(data) {
+    return axios.patch('/user/followings', data)
+}
+
+function* loadfollowings(action) {
+    try {
+        const result = yield call(loadfollowingsAPI, action.data)
+        yield put({
+            type: LOAD_FOLLOWINGS_SUCCESS,
+            data: result.data
+        })
+    } catch (err) {
+        console.error(err)
+        yield put({
+            type: LOAD_FOLLOWINGS_FAILURE,
+            error: err.response.data
+        })
+    }
+}
+
+function loadfollowersAPI(data) {
+    return axios.patch('/user/followers', data)
+}
+function* loadfollowers(action) {
+    try {
+        const result = yield call(loadfollowersAPI, action.data)
+        yield put({
+            type: LOAD_FOLLOWERS_SUCCESS,
+            data: result.data
+        })
+    } catch (err) {
+        console.error(err)
+        yield put({
+            type: LOAD_FOLLOWERS_FAILURE,
+            error: err.response.data
+        })
+    }
+}
+
+
+
+
+
 // 여기서 받는 request 액션에 실어오는 payload가 login함수에 action으로 전달함 그래서 거기서 type data를 받아올 수 있음
 function* watchMyinfo() { 
     yield takeLatest(LOAD_MY_INFO_REQUEST, myinfo)
@@ -170,9 +223,7 @@ function* watchSignup() {
     yield takeLatest(SIGNUP_REQUEST, signup)
 }
 
-function* watchfollow() {
-    yield takeLatest(FOLLOW_REQUEST, follow)
-}
+
 
 function* watchunfollow() {
     yield takeLatest(UNFOLLOW_REQUEST, unfollow)
@@ -182,14 +233,28 @@ function* watchchangenickname() {
     yield takeLatest(CHANGE_NICKNAME_REQUEST, changenickname)
 }
 
+function* watchFollow() {
+    yield takeLatest(FOLLOW_REQUEST, follow)
+}
+
+function* watchLoadFollowings() {
+    yield takeLatest(LOAD_FOLLOWINGS_REQUEST, loadfollowings)
+}
+
+function* watchLoadFollowers() {
+    yield takeLatest(LOAD_FOLLOWERS_REQUEST, loadfollowers)
+}
+
 export default function* userSaga () {
     yield all([
         fork(watchMyinfo),
         fork(watchLogin),
         fork(watchLogout),
         fork(watchSignup),
-        fork(watchfollow),
-        fork(watchunfollow),
         fork(watchchangenickname),
+        fork(watchFollow),
+        fork(watchunfollow),
+        fork(watchLoadFollowings),
+        fork(watchLoadFollowers),
     ]);
 }

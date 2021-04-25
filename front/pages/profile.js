@@ -6,14 +6,27 @@ import FollowerList from '../components/FollowerList.js'
 
 import Router from 'next/router'
 
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST } from '../reducers/user'
 
 const Profile = () => {
 
     // const followers = [{nick:'jj'}, {nick:'jj1'}, {nick:'jj2'}]
     // const followings = [{nick:'hh'}, {nick:'hh'}, {nick:'hh'}]
 
+    const dispatch = useDispatch()
     const { me } = useSelector(state => state.user)
+    
+
+    useEffect(() => {
+        dispatch({
+            type: LOAD_FOLLOWERS_REQUEST,
+        })
+
+        dispatch({
+            type: LOAD_FOLLOWINGS_REQUEST,
+        })
+    }, [])
 
     useEffect(() => {
         if(!(me)) {

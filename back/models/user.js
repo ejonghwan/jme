@@ -30,9 +30,9 @@ module.exports = (sequelize, DataTypes) => {
         // 나중에 as로 좋아요한 사람을 가져올 수 있음. 별칭.
         db.User.belongsToMany(db.Post, { through: 'Like', as: 'Liked' }) 
 
-        //다대다 관계에서 같은 유저에서 관계를 찾을 땐 먼저 찾을걸 foreingKey에 넣어줌
-        db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followers', foreingKey: 'FollowingId', });
-        db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followings', foreingKey: 'FollowerId', });
+        //다대다 관계에서 같은 유저에서 관계를 찾을 땐 먼저 찾을걸 foreignKey에 넣어줌
+        db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followers', foreignKey: 'FollowingId', });
+        db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followings', foreignKey: 'FollowerId', });
 
     };
     return User;

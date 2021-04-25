@@ -301,10 +301,10 @@ const reducer = (state = initialState, action) => {
              }
  
              case UNLIKE_POST_SUCCESS: {
-                 console.log('un:', action.data)
+                //  console.log('un:', action.data)
                 const post = draft.mainPosts.find(val => val.id === action.data.PostId) //back에서 보내준 PostId / UserId 이용해서 같은 게시물 찾기
                 post.Likers = post.Likers.filter(val => val.id !== action.data.UserId) //지울땐 Likers가 배열이니 거기안에 id중에 내 아이디랑 같은게 있으면 없애기
-                console.log('post:', post.Likers)
+                // console.log('post:', post.Likers)
                  draft.unlikePostLoading = false;
                  draft.unlikePostDone = true;
                  draft.unlikePostError = null;

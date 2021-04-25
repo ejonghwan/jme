@@ -123,7 +123,7 @@ router.delete('/:postId/unlike', isLoggedIn, async (req, res, next) => {
 router.delete('/:postId/delete', isLoggedIn, async (req, res, next) => { // DELETE /post
     try {
         await Post.destroy({ // 시퀄라이즈에선 제거할때 destroy 씀
-            where: { 
+            where: { //조건
                 id: req.params.postId,
                 UserId: req.user.id, //Post안에 UserId가 로그인한 내 아이디인 게시물만 삭제할 수 있게 필터하나 걸어줌. 중요
             }

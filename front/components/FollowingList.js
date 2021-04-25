@@ -6,8 +6,13 @@ const FollowingList = ({ header, data }) => {
             {header}<br />
             <div>
                 {data.map( item => {
+                    // console.log('item: ', item)
                     return (
-                        <li>{item.nick}<br /><button>삭제</button></li>
+                        <li>
+                             id: {item.id}<br />
+                            nickname: {item.nickname}<br />
+                            <button>삭제</button>
+                        </li>
                     )
                 })}
             </div>
