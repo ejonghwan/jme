@@ -164,7 +164,7 @@ function* unfollow(action) {
 }
 
 function loadfollowingsAPI(data) {
-    return axios.patch('/user/followings', data)
+    return axios.get('/user/followings')
 }
 
 function* loadfollowings(action) {
@@ -184,7 +184,7 @@ function* loadfollowings(action) {
 }
 
 function loadfollowersAPI(data) {
-    return axios.patch('/user/followers', data)
+    return axios.get('/user/followers')
 }
 function* loadfollowers(action) {
     try {

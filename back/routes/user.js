@@ -169,8 +169,8 @@ router.patch('/:userId/follow', isLoggedIn, async (req, res, next) => {
 
         // user.addFollowers(fullUser)
         // res.status(200).json(fullUser)
-        await user.addFollowers(user.id)
-        res.status(200).json({ UserId: user.id })
+        await user.addFollowers(req.user.id)
+        res.status(200).json({ UserId: parseInt(req.params.userId, 10) })
 
         
     } catch(error) {
@@ -190,7 +190,7 @@ router.delete('/:userId/unfollow', isLoggedIn, async (req, res, next) => {
             return res.status(403).send('유저가 없습니다')
         }
     
-        await user.removeFollowers(req.params.userId)
+        await user.removeFollowers(req.user.id)
         res.status(200).json({ UserId: parseInt(req.params.userId) })
         
     } catch(error) {
@@ -200,7 +200,7 @@ router.delete('/:userId/unfollow', isLoggedIn, async (req, res, next) => {
 
 })
 
-router.patch('/followers', isLoggedIn, async (req, res, next) => {
+router.get('/followers', isLoggedIn, async (req, res, next) => {
     try {
         const user = await User.findOne({
             where: { id: req.user.id },
@@ -215,8 +215,9 @@ router.patch('/followers', isLoggedIn, async (req, res, next) => {
             return res.status(403).send('유저가 없습니다')
         } 
 
-        console.log(user)
+        
         const followers = await user.getFollowers()
+        console.log(followers)
         res.status(200).json(followers)
         // res.status(200).json([{id: 1}])
 
@@ -228,7 +229,7 @@ router.patch('/followers', isLoggedIn, async (req, res, next) => {
 })
 
 
-router.patch('/followings', isLoggedIn, async (req, res, next) => {
+router.get('/followings', isLoggedIn, async (req, res, next) => {
     try {
         const user = await User.findOne({
             where: { id: req.user.id },
