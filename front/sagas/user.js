@@ -8,7 +8,11 @@ import {
     LOGOUT_SUCCESS, LOGOUT_FAILURE,LOGOUT_REQUEST,
     SIGNUP_REQUEST, SIGNUP_SUCCESS, SiGNUP_FAILURE,  
     FOLLOW_FAILURE, FOLLOW_REQUEST, FOLLOW_SUCCESS,
-    UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, CHANGE_NICKNAME_REQUEST, CHANGE_NICKNAME_FAILURE, CHANGE_NICKNAME_SUCCESS, LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_FOLLOWINGS_SUCCESS, LOAD_FOLLOWERS_SUCCESS, LOAD_FOLLOWERS_FAILURE, LOAD_FOLLOWINGS_FAILURE,
+    UNFOLLOW_FAILURE, UNFOLLOW_REQUEST, UNFOLLOW_SUCCESS, 
+    CHANGE_NICKNAME_REQUEST, CHANGE_NICKNAME_FAILURE, CHANGE_NICKNAME_SUCCESS, 
+    LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_FOLLOWINGS_SUCCESS, 
+    LOAD_FOLLOWERS_SUCCESS, LOAD_FOLLOWERS_FAILURE, LOAD_FOLLOWINGS_FAILURE, 
+    REMOVE_FOLLOW_REQUEST, REMOVE_FOLLOW_SUCCESS, REMOVE_FOLLOW_FAILURE,
 } from '../reducers/user'
 
 
@@ -203,6 +207,26 @@ function* loadfollowers(action) {
 }
 
 
+function removefollowAPI(data) {
+    return axios.delete(`/user/${data}/removefollow`)
+}
+function* removefollow(action) {
+    try {
+        const result = yield call(removefollowAPI, action.data)
+        yield put({
+            type: REMOVE_FOLLOW_SUCCESS,
+            data: result.data
+        })
+    } catch (err) {
+        console.error(err)
+        yield put({
+            type: REMOVE_FOLLOW_FAILURE,
+            error: err.response.data
+        })
+    }
+}
+
+
 
 
 
@@ -245,6 +269,10 @@ function* watchLoadFollowers() {
     yield takeLatest(LOAD_FOLLOWERS_REQUEST, loadfollowers)
 }
 
+function* watchRemoveFollow() {
+    yield takeLatest(REMOVE_FOLLOW_REQUEST, removefollow)
+}
+
 export default function* userSaga () {
     yield all([
         fork(watchMyinfo),
@@ -256,5 +284,6 @@ export default function* userSaga () {
         fork(watchunfollow),
         fork(watchLoadFollowings),
         fork(watchLoadFollowers),
+        fork(watchRemoveFollow),
     ]);
 }

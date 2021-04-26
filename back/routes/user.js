@@ -253,6 +253,21 @@ router.get('/followings', isLoggedIn, async (req, res, next) => {
 })
 
 
+router.delete('/:userId/removefollow', async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: { id: req.params.userId }
+        })
+
+        await user.removeFollowings( req.user.id ) //게시물의 유저번호를 찾아서 그 번호의 유저 Followings에서 내 번호를 삭제
+        res.status(200).json({ UserId: user.id })
+    } catch(error) {
+        console.error(error)
+        next(error)
+    }
+})
+
+
 module.exports = router;
 
 

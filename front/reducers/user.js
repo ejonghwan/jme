@@ -32,6 +32,9 @@ export const initialState = {
     loadFollowingsLoading: false, 
     loadFollowingsDone: false,
     loadFollowingsError: null,
+    removeFollowLoading: false, 
+    removeFollowDone: false,
+    removeFollowError: null,
 }
 
 // const dummyUser = data => ({
@@ -81,6 +84,11 @@ export const LOAD_FOLLOWERS_FAILURE = "LOAD_FOLLOWERS_FAILURE"
 export const LOAD_FOLLOWINGS_REQUEST = "LOAD_FOLLOWINGS_REQUEST"
 export const LOAD_FOLLOWINGS_SUCCESS = "LOAD_FOLLOWINGS_SUCCESS"
 export const LOAD_FOLLOWINGS_FAILURE = "LOAD_FOLLOWINGS_FAILURE"
+
+export const REMOVE_FOLLOW_REQUEST = "REMOVE_FOLLOW_REQUEST"
+export const REMOVE_FOLLOW_SUCCESS = "REMOVE_FOLLOW_SUCCESS"
+export const REMOVE_FOLLOW_FAILURE = "REMOVE_FOLLOW_FAILURE"
+
 
 
 export const login_request_action = (data) => {
@@ -305,6 +313,27 @@ const reducer = (state = initialState, action) => {
                 draft.loadFollowingsError = action.error;
                 break;
             }
+
+            case REMOVE_FOLLOW_REQUEST: {
+                draft.removeFollowLoading = true;
+                draft.removeFollowDone = false;
+                draft.removeFollowError = null;
+                break
+             }
+ 
+             case REMOVE_FOLLOW_SUCCESS: {
+                 draft.removeFollowLoading = false;
+                 draft.removeFollowDone = true;
+                 draft.removeFollowError = null;
+                 draft.me.Followers = draft.me.Followers.filter(val => val.id !== action.data.UserId)
+                 break
+              }
+ 
+              case REMOVE_FOLLOW_FAILURE: {
+                 draft.removeFollowLoading = false;
+                 draft.removeFollowError = action.error;
+                 break
+              }
 
             default: break;                 
             

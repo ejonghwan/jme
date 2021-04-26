@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router()
+const multer = require('multer')
+const path = require('path') //node에서 지원
 
 const { Post, User, Image, Comment } = require('../models');
 const { isLoggedIn } = require('./middlewares')
@@ -143,4 +145,42 @@ router.delete('/:postId/delete', isLoggedIn, async (req, res, next) => { // DELE
     
 });
 
+// 멀터는 어떤곳은 한장 어떤곳은 여러장 올릴 수 있으니 각 라우터마다 셋팅을 따로 해줌
+const upload = multer({
+    storage: multer.diskStorage({ //일단은 로컬 하드디스크에 저장해뒀다가 나중에 배포할땐 서버에다 저장해야됨. 이유는 서버 스케일링(여러 대 복사할때) 이미지가 로컬에 있으면 여러대에 같이 복사되기 떄문에  
+        destination(req, file, done) { 
+            done(null, 'uploads')
+        },
+        filename(req, file, done) {  // ex)종환.png 
+            const ext = path.extname(file.originalname) //확장자 추출   (.png)
+            const basename = path.basename(file.originalname, ext) //path는 node 기본제공꺼. 여기에서 이름만 찾아올 수 있다  (종환)
+            done(null, basename + new Date().getTime() + ext) //이미지에 이름이 겹치기 떄문에 시간을 뒤에 붙여줌.
+        }
+    }),
+    limits: { fileSize: 20 * 1024 * 1024 } //용량 제한 20MB 
+    // 동영상같은 경우에는 서버를 안거치는게 좋음. 프론트에서 바로 클라우드 db 로 올리는걸 지원하는데 그걸 사용 
+})
+
+
+
+
+//input에 name="image" 가져온거임. array는 여러장. single은 한장. text는 .none()  filz? 는 file 인풋이 여러개일때 
+router.post('/images', isLoggedIn, upload.array('image'), async (req, res, next) => { 
+    //실행순서 
+    // 1. images로 post 요청받으면 
+    // 2. isLoggedIn 로그인검사 하고 
+    // 3. upload image 올려주고  req.files <- 여기 이미지 업로드 정보가 들어있음.
+    // 4. 그다음 코드 실행 
+
+    console.log(req.files)
+    res.json(req.files.map(val => val.filename))
+})
+
+/* 
+    이미지 올리는 방식은 여러가진데
+    1. 멀티파티 방식은 한방에 서버로 올려주는 방식이라 ex) { content: 'asdasd', image: 10101010101 } 
+       미리보기같은거 할떄 좀 애매함
+    2. 그래서 우리는 두번 보내는 방식  
+        이미지만 요청했다가 ->     파일명 응답받고  <-   파일명으로 미리보기/리사이징 해놓고    사람들이 컨텐츠 작성해서 올리게끔 (단점. 1. 두번 요청 2. 이미지만 업로드했다가 지울수도 있어서 3. 처리가 복잡함)
+*/
 module.exports = router;

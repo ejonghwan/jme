@@ -9,7 +9,10 @@ import {
     LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE,
     generaterDummyPost,
     LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
-    UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE,
+    UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, 
+    UPLOAD_IMAGES_REQUEST,
+    UPLOAD_IMAGES_FAILURE,
+    UPLOAD_IMAGES_SUCCESS,
     
 } from '../reducers/post'
 
@@ -164,6 +167,27 @@ function* unlikePost(action) {
 }
 
 
+function uploadImagesAPI(data) {
+    return axios.post('/post/images', data) // 여기들어오는 form 데이터는 {} 객체로 감싸면 json이 돼 버려서 절대안됨. form데이턴,ㄴ form으로 
+}
+
+function* uploadImages(action) {
+    try {
+        const result = yield call(uploadImagesAPI, action.data)
+        yield put({
+            type: UPLOAD_IMAGES_SUCCESS,
+            data: result.data,
+        })
+    } catch(err) {
+        console.error(err)
+        yield put({
+            type: UPLOAD_IMAGES_FAILURE,
+            error: err.response.data
+        })
+    }
+}
+
+
 
 
 
@@ -191,6 +215,10 @@ function* watchunlikePost() {
     yield takeLatest(UNLIKE_POST_REQUEST, unlikePost)
 }
 
+function* watcUploadImages() {
+    yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages)
+}
+
 
 
 export default function* postSaga() {
@@ -201,5 +229,6 @@ export default function* postSaga() {
         fork(watchloadPost),
         fork(watchlikePost),
         fork(watchunlikePost),
+        fork(watcUploadImages),
     ])
 }

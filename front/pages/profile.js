@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import Layout from '../components/Layout.js'
 import NicknameEditForm from '../components/NicknameEditForm.js'
-import FollowingList from '../components/FollowingList.js'
-import FollowerList from '../components/FollowerList.js'
+import FollowList from '../components/FollowList.js'
 
 import Router from 'next/router'
 
@@ -48,8 +47,8 @@ const Profile = () => {
         <div>
             <Layout>
                 <NicknameEditForm />
-                <FollowingList header="following" data={me.Followings} />
-                <FollowerList header="followers" data={me.Followers} />
+                <FollowList header="followings" data={me.Followings} />
+                <FollowList header="followers" data={me.Followers} />
             </Layout>
         </div>
     );
