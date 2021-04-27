@@ -46,7 +46,7 @@ const ImageForm = ({ data }) => {
                 {data.Images.map((item, idx) => {
                     return (
                         <SwiperSlide key={idx}>
-                            <img src={item.src} alt="" />
+                            <img src={`http://localhost:3065/${item.src}`} alt="" /> {/* 서버에서 받으려면 서버쪽 주소 */}
                         </SwiperSlide>
                     )
                 })} 

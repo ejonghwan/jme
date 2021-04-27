@@ -24,7 +24,8 @@ function randomKey() {
 }
 
 function addpostAPI(data) {
-    return axios.post('/post', { content: data })
+    // return axios.post('/post', { content: data })
+    return axios.post('/post', data) //formData는 무조건 받은 그대로
 }
 
 function* addpost(action) {

@@ -29,7 +29,7 @@ const cors = require('cors')
 
 
 const morgan = require('morgan')
-
+const path = require('path') 
 
 // const multer = require('multer')
 const fs = require('fs') //파일 시스템 조작할 수 있는 노드모듈. 그냥 만들어도 되고 이거로 만들어도 되고 ㅎㅎ
@@ -39,6 +39,10 @@ try {
     console.log('uploads 폴더가 없어서 생성함')
     fs.mkdirSync('uploads')
 }
+
+// 아래 폴더경로에 있는 파일을 프론트에서 바라볼 수 있게해줌. 스태틱한 폴더
+// /는 localhost3065/ 이게 됨
+app.use('/', express.static(path.join(__dirname, 'uploads'))) //현재폴더 안에 'uploads' 폴더를 합쳐줌. +로 하지않고 join써야됨..경로가 운영체제마다 달라서 
 
 
 const bcrypt = require('bcrypt')
@@ -96,26 +100,10 @@ qs모듈이란 ? 뒤에오는 저부분을 req.query에 저장시키는 역할
 // npm i multer encType="multipart/form-data"프론트에서 멀티파트형식으로 보낼때 쓰는 multer
 // app.use(multer()) 멀터는 사용하는 라우터에 셋팅해서 넣는게 좋음. 
 
-// app.post('/', (req, res) => {
-//     res.json([
-//         {id:1, content: 'asdasd1'},
-//         {id:2, content: 'asdasd2'},
-//         {id:3, content: 'asdasd3'},
-//         {id:4, content: 'asdasd4'},
-//     ])
-//     res.send('hihi')
-    
-// })
 
-// app.post('/api/post', (req, res) => {
-//     const aa = res.json([
-//         {id:1, content: 'asdasd1'},
-//         {id:2, content: 'asdasd2'},
-//         {id:3, content: 'asdasd3'},
-//         {id:4, content: 'asdasd4'},
-//     ])
-//     res.send(aa)
-// })
+
+
+
 
 
 app.use('/post', postRouter)
