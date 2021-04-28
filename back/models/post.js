@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Post.associate = (db) => {
-        // 시퀄에서 이런 것들을 만들어줌
+        // 시퀄에서 이런 것들을 만들어줌. post에 연결된 애들이라 아래껄 쓸수있다
         //  post.getUser, < 가져오는건데 이건 include로도 돼서 잘 안씀
         //  post.addUser, < 추가하는거
         //  post.removeUser, < 지우는거
@@ -29,6 +29,7 @@ module.exports = (sequelize, DataTypes) => {
 
         //리트윗
         db.Post.belongsTo(db.Post, { as: 'Retweet' }); //as로 별칭을 바꿔주면 위에 컬럼이 생길때 PostId가 아니라 RetweetId로 바뀜
+        // belongsTo는 컬럼 만들어줌 RetweetId
     };
     return Post;
 }

@@ -6,7 +6,7 @@ import CommentList from './CommentList.js'
 import FollowButton from './FollowButton.js'
 import PostCardContent from './PostCardContent.js'
 import { removePost } from '../reducers/post'
-import { LIKE_POST_REQUEST, UNLIKE_POST_REQUEST } from '../reducers/post'
+import { LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post'
 
 
 
@@ -16,6 +16,7 @@ const PostCard = ({ data }) => {
     const dispatch = useDispatch()
 
     const { me } = useSelector(state => state.user )
+    const { retweetError } = useSelector(state => state.post )
     const id = me && me.id
     
     const like = data.Likers.find(val => val.id === id) //data (mainPosts) 에 Likers에 내 아이디가 있으면 
@@ -33,38 +34,63 @@ const PostCard = ({ data }) => {
     }, [])
 
     const onLike = useCallback(() => {
-        dispatch({
+        if(!id) { alert('로그인이 필요합니다') }
+        return dispatch({
             type: LIKE_POST_REQUEST,
             data: data.id,
         })
-    }, [])
+    }, [id])
     const onUnlike = useCallback(() => {
-        dispatch({
+        if(!id) { alert('로그인이 필요합니다') }
+        return dispatch({
             type: UNLIKE_POST_REQUEST,
             data: data.id,
         })
         // console.log(data.id) // 내가누른 게시글의 id를 보내줌
-    }, [])
+    }, [id])
 
 
-    const handleRemoveValue = e => {
-        dispatch(removePost(data.id))
-    }
+    const onRemoveValue = useCallback(e => {
+        if(!id) { alert('로그인이 필요합니다') }
+        return dispatch(removePost(data.id))
+    }, [id])
+
+    const onRetweet = useCallback(() => {
+        if(!id) { alert('로그인이 필요합니다') }
+        return dispatch({
+            type: RETWEET_REQUEST,
+            data: data.id,
+        })
+    }, [id])
 
 
-    // useEffect(() => {
-    //     console.log(id)
-    // }, [id])
+    // useEffect(() => { 반복문안에 이걸 넣으면 .....글만큼 리랜더링됨
+    //     if(retweetError) { alert('자신의 글은 리트윗 할 수 없습니다.') }
+    // }, [retweetError])
     
 
     return (
         <div>
-            {data.Images[0] && <ImageForm data={data} />}
-            <FollowButton data={data}/>
-            <div>{data.User.nickname[0]}</div>
-            <div>{data.User.nickname}</div>
-            <div>{<PostCardContent data={data.content}/>}</div>
-            <button>리트윗</button>
+            {data.RetweetId && data.Retweet ? (
+                <div style={{backgroundColor: "#ddd"}}>
+                    {data.User.nickname}님이 리트윗했습니다<br />
+                    {data.Retweet.Images[0] && <ImageForm data={data.Retweet} />}
+                    <FollowButton data={data.Retweet}/>
+                    <div>{data.Retweet.User.nickname[0]}</div>
+                    <div>{data.Retweet.User.nickname}</div>
+                    <div>{<PostCardContent data={data.Retweet.content}/>}</div>
+                    <button onClick={onRetweet}>리트윗</button>
+                </div>
+            ) : (
+                <div>
+                    {data.Images[0] && <ImageForm data={data} />}
+                    <FollowButton data={data}/>
+                    <div>{data.User.nickname[0]}</div>
+                    <div>{data.User.nickname}</div>
+                    <div>{<PostCardContent data={data.content}/>}</div>
+                    <button onClick={onRetweet}>리트윗</button>
+                </div>
+            )}
             {!like ? (
                 <button name="like" onClick={onLike} style={{color: 'black'}}>좋아요</button>
             ) : (
@@ -74,7 +100,7 @@ const PostCard = ({ data }) => {
             {id && data.User.id === id ? (
                 <>
                     <button>수정</button>
-                    <button onClick={handleRemoveValue}>삭제</button>
+                    <button onClick={onRemoveValue}>삭제</button>
                 </>
             ) : ( 
                 <>

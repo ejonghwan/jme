@@ -13,7 +13,7 @@ const index = () => {
 
     const dispatch = useDispatch();
     const { loginDone, me } = useSelector(state => state.user)
-    const { mainPosts, infiniteLimit, loadPostLoading } = useSelector(state => state.post)
+    const { mainPosts, infiniteLimit, loadPostLoading, retweetError } = useSelector(state => state.post)
     const { loginLoading, logoutLoading } = useSelector(state => state.user)
     
     // console.log(me)
@@ -46,6 +46,10 @@ const index = () => {
         } 
     }, [infiniteLimit, loadPostLoading])
     
+    useEffect(() => { 
+        if(retweetError) { alert('자신의 글은 리트윗 할 수 없습니다.') }
+    }, [retweetError])
+
     return (
         <div>
             <Layout>

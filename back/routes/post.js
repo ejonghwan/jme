@@ -3,7 +3,7 @@ const router = express.Router()
 const multer = require('multer')
 const path = require('path') //node에서 지원
 
-const { Post, User, Image, Comment } = require('../models');
+const { Post, User, Image, Comment, Hashtag } = require('../models');
 const { isLoggedIn } = require('./middlewares')
 
 
@@ -47,11 +47,23 @@ router.post('/images', isLoggedIn, upload.array('image'), async (req, res, next)
 
 // post 게시물 db에 추가하고 응답하는  
 router.post('/', isLoggedIn, upload.none(), async (req, res, next) => { //POST /post/
+
     try {
+        
+        const hashtags = req.body.content.match(/#[^\s#]+/g) //클라이언트에서 온 게시물 중, 해시태그가 있으면
         const post = await Post.create({ //db에 생성
             content: req.body.content,
             UserId: req.user.id, //passport 중에 deserializeUser함수에서 라우터가 실행할때마다 req.user에 아이디를 넣어줌
         })
+
+        if(hashtags) { //해시태그. 해시태그를 두번 등록하는 사람들. findOrcreate 있으면 가져오고 없으면 만들고
+            const result = await Promise.all(hashtags.map(tag => Hashtag.findOrCreate({ 
+                where: { content: tag.slice(1).toLowerCase() },
+            }))); //# slice로 떼고 저장
+            await post.addHashtags(result.map(val => val[0])) //사용방법이 다른 이유는 findOrCreate 라서
+            //result의 모양이 [[해시, true], [해시2, true]] 2번째 true는 생성됐는지 알려주는 불리언. 새로생성이 true
+            // 그래서 ...val[0] 으로 첫번째 값만 추출해야된다
+        }
 
         if(req.body.image) {
             if(Array.isArray(req.body.image)) { //조건이 두가진데, 이미지 여러개 올리면 image: [1.png, 2.png] <-배열
@@ -122,6 +134,15 @@ router.post('/:postId/comment', isLoggedIn, async (req, res, next) => { //POST /
             }],
         })
 
+        /* { 풀코멘트 모양
+                "id":30,
+                "content":"이거다 이거 ",
+                "createdAt":"2021-04-28T16:43:13.000Z",
+                "updatedAt":"2021-04-28T16:43:13.000Z",
+                "UserId":9,
+                "PostId":34,
+                "User":{"id":9,"nickname":"whdghks"}
+        }*/
      
         res.status(200).json(fullComment) //클라이언트에 응답해주고 
     } catch(error) {
@@ -195,6 +216,89 @@ router.delete('/:postId/delete', isLoggedIn, async (req, res, next) => { // DELE
     
 });
 
+
+router.post('/retweet/:postId', isLoggedIn, async (req, res, next) => {
+    try {
+        const post = await Post.findOne({
+            where: { id: req.params.postId },
+            include: [{
+                model: Post,
+                as: 'Retweet',
+            }]
+        })
+        /* post 에는 이렇게 담겨있음. 인클루드 model: Post, as: 'Retweet' 하면 저 아래 Retweet이 만들어짐
+            {
+                "id":35,
+                "content":"해시태그 2 테스트 2\n#하하 #호호",
+                "createdAt":"2021-04-28T13:36:40.000Z",
+                "updatedAt":"2021-04-28T13:36:40.000Z",
+                "UserId":11,
+                "RetweetId":null,
+                "Retweet":null
+            } 
+        */
+
+        if(!post) { return res.status(403).send('게시물이 없습니다') }
+        if(req.user.id === post.UserId || post.Retweet && post.Retweet.UserId === req.user.id) {//내 게시물을 리트윗하는거랑 내 게시물을 리트윗한걸 다시 내가 리트윗하는걸 막음
+            return res.status(403).send('자신의 글은 리트윗 할 수 없습니다 ')
+        }
+        
+
+        // 두번 리트윗 하는걸 막아줌
+        const retweetTargetId = post.RetweetId || post.id //post에 리트윗 아이디가 있으면 그걸쓰고 없으면 게시글 아이디 쓴다. 걍 정책
+        const exPost = await Post.findOne({
+            where: {
+                UserId: req.user.id, 
+                RetweetId: retweetTargetId, //조건에 UserId, RetweetId가 같으면  
+            }
+        })
+        if(exPost) { return res.status(403).send('이미 리트윗 했습니다') }
+
+        
+        const retweet = await Post.create({ //리트윗한 게시물 내 게시물에 생성
+            UserId: req.user.id,
+            RetweetId: retweetTargetId,
+            content: 'retweet' //걍 넣은거
+        })
+
+        // 생성한걸 찾아서 여러 정보들 버무려서 client에 보내줌
+        const retweetWithPrevPost = await Post.findOne({ //그냥 retweet 보내줘도 되지만 내가 리트윗한 게시물이 안나와서 이렇게 다 넣어줘서 보내준다
+            where: { id: retweet.id },
+            include: [{
+                model: Post, //리트윗한 게시물
+                as: 'Retweet', //리트윗한 게시물이 post.Retweet으로 담김
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname']
+                }, {
+                    model: Image,
+                }]
+            }, {
+                model: User,
+                attributes: ['id', 'nickname'],
+            }, {
+                model: Image,
+            }, {
+                model: Comment,
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname']
+                }]
+            }, {
+                model: User,
+                as: 'Likers',
+                attributes: ['id']
+            }]
+        }) //이런 관계들이 복잡해지면 디비 조회가 느려지기 떄문에 나중에 댓글같은건 라우터 하나 더 파서 나중에 불러오게끔..아니면 댓글더보기 눌렀을떄 불러오게 한다던지 
+
+        
+        res.status(200).json(retweetWithPrevPost)
+
+    } catch(error) {
+        console.error(error);
+        next(error)
+    }
+}) 
 
 
 

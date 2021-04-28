@@ -32,7 +32,16 @@ router.get('/', async (req, res, next) => { //posts
                 model: User, //좋아요 한 유저
                 as: 'Likers', // db model에서 만든 as 꼭 넣어주기
                 attributes: ['id'],
-            }]
+            },{
+                model: Post, //리트윗한 게시물
+                as: 'Retweet', //리트윗한 게시물이 post.Retweet으로 담김
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname']
+                }, {
+                    model: Image,
+                }]
+            },]
         })
         console.log(posts)
         res.status(200).json(posts)

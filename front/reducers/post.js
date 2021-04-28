@@ -28,6 +28,9 @@ export const initialState = {
     uploadImagesLoading: false,
     uploadImagesDone: false,
     uploadImagesError: null,
+    retweetLoading: false,
+    retweetDone: false,
+    retweetError: null,
     
 }
 
@@ -134,6 +137,11 @@ export const UPLOAD_IMAGES_SUCCESS = "UPLOAD_IMAGES_SUCCESS"
 export const UPLOAD_IMAGES_FAILURE = "UPLOAD_IMAGES_FAILURE"
 
 export const REMOVE_IMAGE = "REMOVE_IMAGE"
+
+export const RETWEET_REQUEST = "RETWEET_REQUEST"
+export const RETWEET_SUCCESS = "RETWEET_SUCCESS"
+export const RETWEET_FAILURE = "RETWEET_FAILURE"
+
 
 function randomKey() {
     return Math.random().toString(36).substr(2)
@@ -316,34 +324,57 @@ const reducer = (state = initialState, action) => {
                  break
               }
  
-              case UNLIKE_POST_FAILURE: {
-                 draft.unlikePostLoading = false;
-                 draft.unlikePostDone = false;
-                 draft.unlikePostError = action.error;
-                 break
-              }
+            case UNLIKE_POST_FAILURE: {
+                draft.unlikePostLoading = false;
+                draft.unlikePostDone = false;
+                draft.unlikePostError = action.error;
+                break
+            }
 
-              case UPLOAD_IMAGES_REQUEST: {
+            case UPLOAD_IMAGES_REQUEST: {
                 draft.uploadImagesLoading = true;
                 draft.uploadImagesDone = false;
                 draft.uploadImagesError = null;
                 break
-             }
+            }
  
-             case UPLOAD_IMAGES_SUCCESS: {
-                 draft.uploadImagesLoading = false;
-                 draft.uploadImagesDone = true;
-                 draft.uploadImagesError = null;
-                 draft.imagePaths = action.data;
-                 break
-              }
+            case UPLOAD_IMAGES_SUCCESS: {
+                draft.uploadImagesLoading = false;
+                draft.uploadImagesDone = true;
+                draft.uploadImagesError = null;
+                draft.imagePaths = action.data;
+                break
+            }
+
+            case UPLOAD_IMAGES_FAILURE: {
+                draft.uploadImagesLoading = false;
+                draft.uploadImagesDone = false;
+                draft.uploadImagesError = action.error;
+                break
+            }
+
+            case RETWEET_REQUEST: {
+                draft.retweetLoading = true;
+                draft.retweetDone = false;
+                draft.retweetError = null;
+                break
+            }
  
-              case UPLOAD_IMAGES_FAILURE: {
-                 draft.uploadImagesLoading = false;
-                 draft.uploadImagesDone = false;
-                 draft.uploadImagesError = action.error;
-                 break
-              }
+            case RETWEET_SUCCESS: {
+                console.log(action.data)
+                draft.mainPosts.unshift(action.data)
+                draft.retweetLoading = false;
+                draft.retweetDone = true;
+                draft.retweetError = null;
+                break
+            }
+
+            case RETWEET_FAILURE: {
+                draft.retweetLoading = false;
+                draft.retweetDone = false;
+                draft.retweetError = action.error;
+                break
+            }
 
               
 
