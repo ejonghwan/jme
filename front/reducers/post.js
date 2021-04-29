@@ -271,7 +271,8 @@ const reducer = (state = initialState, action) => {
                 draft.loadPostDone = true;
                 draft.loadPostError = null;
                 draft.mainPosts = draft.mainPosts.concat(action.data);
-                draft.infiniteLimit = draft.mainPosts.length < 50
+                // draft.infiniteLimit = draft.mainPosts.length < 50
+                draft.infiniteLimit = action.data.length === 10; //10개씩 불러오다가 나머지가 10이 안될 떄 false
                 // draft.infiniteLimit = action.data.concat(draft.mainPosts).length < 50
                 break
             }

@@ -106,15 +106,15 @@ function* addComment(action) {
     }
 }
 
-
+//get은 query string으로 보내는데 이렇게되면 데이터까지 같이 캐싱이 됨. post put patch는 데이터 캐싱 안됨
 function loadPostAPI(data) {
-    return axios.get('/posts', data)
+    return axios.get(`/posts?lastId=${data || 0}`) //lastId가 undefind면 0으로 
 }
 
 function* loadPost(action) {
     // yield delay(1000);
     try {
-        const result = yield call(loadPostAPI, action.data) 
+        const result = yield call(loadPostAPI, action.lastId)  //2번째 인자는 dispatch할떄 보내준 데이터 키값
         yield put({
             type: LOAD_POST_SUCCESS,
             // data: generaterDummyPost(10)

@@ -34,9 +34,13 @@ const index = () => {
             let bodyHeight = document.body.clientHeight;
             let currentVal = window.pageYOffset;
             let windowHeight = window.innerHeight;
-            if(bodyHeight - 500 < currentVal + windowHeight && infiniteLimit && !loadPostLoading) {
+            if(bodyHeight - 100 < currentVal + windowHeight && infiniteLimit && !loadPostLoading) {
                 // console.log('^^')
-                dispatch({ type: LOAD_POST_REQUEST })
+                const lastId = mainPosts[mainPosts.length - 1] && mainPosts[mainPosts.length - 1].id //지금 불러온 mainPosts안, 배열 마지막꺼 아이디
+                dispatch({ 
+                    type: LOAD_POST_REQUEST,
+                    lastId: lastId,
+                })
             }
             // console.log(infiniteLimit)
         }
@@ -44,11 +48,15 @@ const index = () => {
         return () => {
             window.removeEventListener('scroll', infiniteScroll);
         } 
-    }, [infiniteLimit, loadPostLoading])
+    }, [infiniteLimit, loadPostLoading, mainPosts])
     
+
+
     useEffect(() => { 
         if(retweetError) { alert('자신의 글은 리트윗 할 수 없습니다.') }
     }, [retweetError])
+
+
 
     return (
         <div>

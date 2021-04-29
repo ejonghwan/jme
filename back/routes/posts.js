@@ -3,13 +3,22 @@
 const express = require('express');
 const router = express.Router();
 const { Post, User, Image, Comment } = require('../models');
+const { Op } = require('sequelize') //오퍼레이터
 
 
 
 router.get('/', async (req, res, next) => { //posts
 
     try {
-        const posts = await Post.findAll({ //lastId limit 방식
+        const where = {} // 초기로딩일땐 10개를 바로 불러오면 되는데, 스크롤했을 땐 조건이 다르기때문에 where를 밖으로 빼줌
+        const lastId = parseInt(req.query.lastId, 10); //query string으로 보내서 req.query에 들어있음.
+        if(lastId) { //초기 로딩이 아닐 때
+            where.id = { [Op.lt]: lastId } //지금 lastId보다 작은애들 불러옴.   조건: 아이디where.id가 라스트아이디lastId 보다 작은Op.lt 
+            //21 20 19 18 17 16 15 14 13 12(lastId) 12가 라스트 아이디면 11부터 -> 11 10 9 8 7 6 5 4 3 2 1
+        }
+
+        const posts = await Post.findAll({ //lastId limit 방식.
+            where: where,
             limit: 10, //10개만 가져와라
             // offset: 100, // 101~ 110번까지 가져와라. 근데 문제가 있음, 중간에 추가됐을 때 
             order: [
