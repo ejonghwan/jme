@@ -17,14 +17,17 @@ router.get('/', async (req, res, next) => {
         if(req.user) { //req.user가 있을 때만 응답을 해줌. 없으면 널 
             const user = await User.findOne({
                 where: { id: req.user.id },
+                attributes: { exclude: ['password'] },
                 include: [{ //db에 연결한 관계들을 인클루드에 그대로 가져오면 됨
                     model: Post, //hasMany라서 model: Post가 me.Posts가 됨. models의 user에 post 한명한테 묶어놓은 관계형에있음
                 }, {
                     model: User,
                     as: 'Followings', //as썻으면 as 써줘야됨
+                    attributes: { exclude: ['password', 'email'] },
                 }, {
                     model: User,
                     as: 'Followers',
+                    attributes: { exclude: ['password', 'email'] },
                 }]
             })
             res.status(200).json(user)
@@ -73,9 +76,11 @@ router.post('/login', isNotLoggedIn,  async (req, res, next) => {
                 }, {
                     model: User,
                     as: 'Followings', //as썻으면 as 써줘야됨
+                    attributes: { exclude: ['password', 'email'] },
                 }, {
                     model: User,
                     as: 'Followers',
+                    attributes: { exclude: ['password', 'email'] },
                 }]
             })
             return res.status(200).json(fullUserWithoutPassword)
