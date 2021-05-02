@@ -15,6 +15,7 @@ export const initialState = {
     changeNicknameDone: false,
     changeNicknameError: null,
     me: null,
+    userInfo: null,
     loginData: {},
     signupData: {},
     followLoading: false,
@@ -350,9 +351,12 @@ const reducer = (state = initialState, action) => {
              }
  
              case LOAD_USER_SUCCESS: {
-                 draft.loadUserLoading = false;
-                 draft.loadUserDone = true;
-                 draft.loadUserError = null;
+                //  draft.loadUserLoading = false;
+                //  draft.loadUserDone = true;
+                //  draft.loadUserError = null;
+                draft.loadUserLoading = false;
+                draft.userInfo = action.data;
+                draft.loadUserDone = true;
                  break
               }
  

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {useState, useEffect } from 'react';
 import Layout from '../components/Layout.js'
 import PostForm from '../components/PostForm.js'
 import PostCard from '../components/PostCard.js'
@@ -19,7 +19,6 @@ const index = () => {
     const { loginLoading, logoutLoading } = useSelector(state => state.user)
     
     // console.log(me)
-
     useEffect(() => { //얘네 서버사이드로 
         // dispatch({
         //     type: LOAD_MY_INFO_REQUEST
@@ -29,6 +28,10 @@ const index = () => {
         //         type: LOAD_POST_REQUEST 
         //     })
         // }
+
+        rr = axios.get('/user/me')
+        console.log(rr)
+        
     }, [])
 
     

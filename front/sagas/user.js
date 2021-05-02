@@ -226,16 +226,16 @@ function* removefollow(action) {
     }
 }
 
-function loaduserAPI(userId) {
-    return axios.get(`/user/${userId}`)
+function loaduserAPI(data) {
+    return axios.get(`/user/${data}`)
 }
 
 function* loaduserinfo(action) {
     try {
-        const result = yield call(loaduserAPI, action.userId)
+        const result = yield call(loaduserAPI, action.data) //action.data = 11
         yield put({
             type: LOAD_USER_SUCCESS,
-            data: result.UserId,
+            data: result.data,
         })
     } catch(err) {
         console.error(err)
@@ -245,6 +245,26 @@ function* loaduserinfo(action) {
         })
     }
 }
+
+// function loadUserAPI(data) {
+//     return axios.get(`/user/${data}`);
+//   }
+  
+//   function* loaduserinfo(action) {
+//     try {
+//       const result = yield call(loadUserAPI, action.data);
+//       yield put({
+//         type: LOAD_USER_SUCCESS,
+//         data: result.data,
+//       });
+//     } catch (err) {
+//       console.error(err);
+//       yield put({
+//         type: LOAD_USER_FAILURE,
+//         error: err.response.data,
+//       });
+//     }
+//   }
 
 
 
