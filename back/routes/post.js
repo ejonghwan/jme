@@ -32,7 +32,7 @@ router.post('/images', isLoggedIn, upload.array('image'), async (req, res, next)
     // 3. upload image 올려주고  req.files <- 여기 이미지 업로드 정보가 들어있음.
     // 4. 그다음 코드 실행 
 
-    console.log(req.files)
+    // console.log(req.files)
     res.json(req.files.map(val => val.filename))
 })
 

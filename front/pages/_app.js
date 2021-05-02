@@ -34,4 +34,5 @@ App.propTypes = {
 }
 
 
-export default wrapper.withRedux(withReduxSaga(App));
+// export default wrapper.withRedux(withReduxSaga(App));
+export default wrapper.withRedux(App);

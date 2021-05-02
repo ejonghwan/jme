@@ -13,6 +13,7 @@ const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 // 새로고침 시 cookie 사용자 정보 복구
 router.get('/', async (req, res, next) => {
+    console.log('cookie check: ', req.headers)
     try{
         if(req.user) { //req.user가 있을 때만 응답을 해줌. 없으면 널 
             const user = await User.findOne({
@@ -61,7 +62,7 @@ router.post('/login', isNotLoggedIn,  async (req, res, next) => {
         return req.login(user, async(loginErr) => { 
             
             if(loginErr) { // 이건 혹시나 passport에서 에러날까봐
-                console.log(loginErr)
+                console.error(loginErr)
                 return next(loginErr)
             }
 
@@ -222,7 +223,7 @@ router.get('/followers', isLoggedIn, async (req, res, next) => {
 
         
         const followers = await user.getFollowers()
-        console.log(followers)
+        // console.log(followers)
         res.status(200).json(followers)
         // res.status(200).json([{id: 1}])
 
@@ -269,6 +270,40 @@ router.delete('/:userId/removefollow', async (req, res, next) => {
     } catch(error) {
         console.error(error)
         next(error)
+    }
+})
+
+
+router.get('/:userId', async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: { id: req.params.userId }
+        })
+
+        if(!user) {
+            res.status(403).send('유저가 없습니다')
+        }
+
+        const fullUser = await User.findOne({
+            where: { id: user.id },
+            attributes: { exclude: ['password'] },
+                include: [{ 
+                    model: Post, 
+                }, {
+                    model: User,
+                    as: 'Followings', //as썻으면 as 써줘야됨
+                    attributes: { exclude: ['password', 'email'] },
+                }, {
+                    model: User,
+                    as: 'Followers',
+                    attributes: { exclude: ['password', 'email'] },
+                }]
+        })
+
+        res.status(200).json(fullUser)
+    } catch(error) {
+        console.error(error);
+        next(error);
     }
 })
 

@@ -35,6 +35,9 @@ export const initialState = {
     removeFollowLoading: false, 
     removeFollowDone: false,
     removeFollowError: null,
+    loadUserLoading: false, 
+    loadUserDone: false,
+    loadUserError: null,
 }
 
 // const dummyUser = data => ({
@@ -88,6 +91,10 @@ export const LOAD_FOLLOWINGS_FAILURE = "LOAD_FOLLOWINGS_FAILURE"
 export const REMOVE_FOLLOW_REQUEST = "REMOVE_FOLLOW_REQUEST"
 export const REMOVE_FOLLOW_SUCCESS = "REMOVE_FOLLOW_SUCCESS"
 export const REMOVE_FOLLOW_FAILURE = "REMOVE_FOLLOW_FAILURE"
+
+export const LOAD_USER_REQUEST = "LOAD_USER_REQUEST"
+export const LOAD_USER_SUCCESS = "LOAD_USER_SUCCESS"
+export const LOAD_USER_FAILURE = "LOAD_USER_FAILURE"
 
 
 
@@ -332,6 +339,25 @@ const reducer = (state = initialState, action) => {
               case REMOVE_FOLLOW_FAILURE: {
                  draft.removeFollowLoading = false;
                  draft.removeFollowError = action.error;
+                 break
+              }
+
+              case LOAD_USER_REQUEST: {
+                draft.loadUserLoading = true;
+                draft.loadUserDone = false;
+                draft.loadUserError = null;
+                break
+             }
+ 
+             case LOAD_USER_SUCCESS: {
+                 draft.loadUserLoading = false;
+                 draft.loadUserDone = true;
+                 draft.loadUserError = null;
+                 break
+              }
+ 
+              case LOAD_USER_FAILURE: {
+                 draft.loadUserError = action.error;
                  break
               }
 

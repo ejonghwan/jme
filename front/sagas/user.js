@@ -12,7 +12,7 @@ import {
     CHANGE_NICKNAME_REQUEST, CHANGE_NICKNAME_FAILURE, CHANGE_NICKNAME_SUCCESS, 
     LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_FOLLOWINGS_SUCCESS, 
     LOAD_FOLLOWERS_SUCCESS, LOAD_FOLLOWERS_FAILURE, LOAD_FOLLOWINGS_FAILURE, 
-    REMOVE_FOLLOW_REQUEST, REMOVE_FOLLOW_SUCCESS, REMOVE_FOLLOW_FAILURE,
+    REMOVE_FOLLOW_REQUEST, REMOVE_FOLLOW_SUCCESS, REMOVE_FOLLOW_FAILURE, LOAD_USER_REQUEST, LOAD_USER_FAILURE, LOAD_USER_SUCCESS,
 } from '../reducers/user'
 
 
@@ -226,9 +226,31 @@ function* removefollow(action) {
     }
 }
 
+function loaduserAPI(userId) {
+    return axios.get(`/user/${userId}`)
+}
+
+function* loaduserinfo(action) {
+    try {
+        const result = yield call(loaduserAPI, action.userId)
+        yield put({
+            type: LOAD_USER_SUCCESS,
+            data: result.UserId,
+        })
+    } catch(err) {
+        console.error(err)
+        yield put({
+            type: LOAD_USER_FAILURE,
+            error: err.response.data
+        })
+    }
+}
 
 
 
+function* watchLoaduser() {
+    yield takeLatest(LOAD_USER_REQUEST, loaduserinfo)
+}
 
 // 여기서 받는 request 액션에 실어오는 payload가 login함수에 action으로 전달함 그래서 거기서 type data를 받아올 수 있음
 function* watchMyinfo() { 
@@ -273,6 +295,8 @@ function* watchRemoveFollow() {
     yield takeLatest(REMOVE_FOLLOW_REQUEST, removefollow)
 }
 
+
+
 export default function* userSaga () {
     yield all([
         fork(watchMyinfo),
@@ -285,5 +309,6 @@ export default function* userSaga () {
         fork(watchLoadFollowings),
         fork(watchLoadFollowers),
         fork(watchRemoveFollow),
+        fork(watchLoaduser),
     ]);
 }
