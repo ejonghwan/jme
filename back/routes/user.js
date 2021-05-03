@@ -274,9 +274,6 @@ router.delete('/:userId/removefollow', async (req, res, next) => {
 })
 
 
-router.get('/me', (req, res, next) => {
-    res.send('<div><h1>hoho</h1><div><ul><li>1</li><li>2</li></ul></div></div>')
-})
 
 router.get('/:userId', async (req, res, next) => {
     try {
@@ -304,8 +301,15 @@ router.get('/:userId', async (req, res, next) => {
                 }]
         })
 
-        res.status(200).json(fullUser)
-        // res.status(200).send('about')
+        if(fullUser) {
+            const data = fullUser.toJSON() //sequelize에서 받아온 데이터는 쓰려면 json으로 한번 변경해줘야함
+            data.Posts = data.Posts.length;
+            data.Followings = data.Followings.length;
+            data.Followers = data.Followers.length;
+
+            return res.status(200).json(data)
+        }
+
     } catch(error) {
         console.error(error);
         next(error);
@@ -313,40 +317,6 @@ router.get('/:userId', async (req, res, next) => {
 })
 
 
-// router.get('/:userId', async (req, res, next) => { // GET /user/3
-//     try {
-//       const fullUserWithoutPassword = await User.findOne({
-//         where: { id: req.params.userId },
-//         attributes: {
-//           exclude: ['password']
-//         },
-//         include: [{
-//           model: Post,
-//           attributes: ['id'],
-//         }, {
-//           model: User,
-//           as: 'Followings',
-//           attributes: ['id'],
-//         }, {
-//           model: User,
-//           as: 'Followers',
-//           attributes: ['id'],
-//         }]
-//       })
-//       if (fullUserWithoutPassword) {
-//         const data = fullUserWithoutPassword.toJSON();
-//         data.Posts = data.Posts.length;
-//         data.Followings = data.Followings.length;
-//         data.Followers = data.Followers.length;
-//         res.status(200).json(data);
-//       } else {
-//         res.status(404).json('존재하지 않는 사용자입니다.');
-//       }
-//     } catch (error) {
-//       console.error(error);
-//       next(error);
-//     }
-//   });
 
 module.exports = router;
 

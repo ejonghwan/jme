@@ -6,12 +6,12 @@ import {
     ADD_POST_REQUEST, ADD_POST_SUCCESS, ADD_POST_FAILURE,
     ADD_COMMENT_REQUEST, ADD_COMMENT_SUCCESS, ADD_COMMENT_FAILURE, 
     REMOVE_POST_SUCCESS, REMOVE_POST_FAILURE, REMOVE_POST_REQUEST, 
-    LOAD_POST_REQUEST, LOAD_POST_SUCCESS, LOAD_POST_FAILURE,
+    LOAD_POSTS_REQUEST, LOAD_POSTS_SUCCESS, LOAD_POSTS_FAILURE,
     generaterDummyPost,
     LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
     UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, 
     UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_SUCCESS,
-    RETWEET_REQUEST, RETWEET_FAILURE, RETWEET_SUCCESS,
+    RETWEET_REQUEST, RETWEET_FAILURE, RETWEET_SUCCESS, LOAD_POST_REQUEST, LOAD_POST_FAILURE, LOAD_POST_SUCCESS,
     
 } from '../reducers/post'
 
@@ -107,22 +107,22 @@ function* addComment(action) {
 }
 
 //get은 query string으로 보내는데 이렇게되면 데이터까지 같이 캐싱이 됨. post put patch는 데이터 캐싱 안됨
-function loadPostAPI(data) {
+function loadPostsAPI(data) {
     return axios.get(`/posts?lastId=${data || 0}`) //lastId가 undefind면 0으로 
 }
 
-function* loadPost(action) {
+function* loadPosts(action) {
     // yield delay(1000);
     try {
-        const result = yield call(loadPostAPI, action.lastId)  //2번째 인자는 dispatch할떄 보내준 데이터 키값
+        const result = yield call(loadPostsAPI, action.lastId)  //2번째 인자는 dispatch할떄 보내준 데이터 키값
         yield put({
-            type: LOAD_POST_SUCCESS,
+            type: LOAD_POSTS_SUCCESS,
             // data: generaterDummyPost(10)
             data: result.data,
         })
     } catch (err) {
         yield put({
-            type: LOAD_POST_FAILURE,
+            type: LOAD_POSTS_FAILURE,
             error: err.response.data
         })
     }
@@ -207,6 +207,25 @@ function* retweet(action) {
     }
 }
 
+function loadpostAPI(data) {
+    return axios.get(`/post/${data}`)
+}
+
+function* loadpost(action) {
+    try {
+        const result = yield call(loadpostAPI, action.data)
+        yield put({
+            type: LOAD_POST_SUCCESS,
+            data: result.data,
+        })
+    } catch(err) {
+        console.error(err)
+        yield put({
+            type: LOAD_POST_FAILURE,
+            error: err.response.data,
+        })
+    }
+}
 
 
 
@@ -223,8 +242,8 @@ function* watchRemovePost() {
     yield takeLatest(REMOVE_POST_REQUEST, removePost)
 }
 
-function* watchloadPost() {
-    yield takeLatest(LOAD_POST_REQUEST, loadPost)
+function* watchloadPosts() {
+    yield takeLatest(LOAD_POSTS_REQUEST, loadPosts)
 }
 
 function* watchlikePost() {
@@ -243,16 +262,21 @@ function* watchRetweet() {
     yield takeLatest(RETWEET_REQUEST, retweet)
 }
 
+function* watchLoadpost() {
+    yield takeLatest(LOAD_POST_REQUEST, loadpost)
+}
 
 export default function* postSaga() {
     yield all([
         fork(watchAddPost),
         fork(watchRemovePost),
         fork(watchAddComment),
-        fork(watchloadPost),
+        fork(watchloadPosts),
         fork(watchlikePost),
         fork(watchunlikePost),
         fork(watcUploadImages),
         fork(watchRetweet),
+        fork(watchRetweet),
+        fork(watchLoadpost),
     ])
 }

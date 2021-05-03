@@ -251,7 +251,7 @@ const reducer = (state = initialState, action) => {
             case FOLLOW_FAILURE: {
                 draft.followLoading = false;
                 draft.followDone = false;
-                draft.followError = action.data.error;
+                draft.followError = action.error;
                 break
             }
 
@@ -274,7 +274,7 @@ const reducer = (state = initialState, action) => {
             case UNFOLLOW_FAILURE: {
                 draft.unfollowLoading = false;
                 draft.unfollowDone = false;
-                draft.unfollowError = action.data.error;
+                draft.unfollowError = action.error;
                 break
             }
 

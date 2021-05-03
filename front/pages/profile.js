@@ -6,7 +6,11 @@ import FollowList from '../components/FollowList.js'
 import Router from 'next/router'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST } from '../reducers/user'
+import { LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducers/user'
+
+import axios from 'axios';
+import wrapper from '../store/configureStore';
+import { END } from 'redux-saga' 
 
 const Profile = () => {
 
@@ -53,5 +57,23 @@ const Profile = () => {
         </div>
     );
 };
+
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+    console.log('server side props start')
+    // console.log('콘텍스트야!:', context)
+
+    const cookie = context.req ? context.req.headers.cookie : ''; 
+    axios.defaults.headers.Cookie = '';
+    if(context.req && cookie) {
+        axios.defaults.headers.Cookie = cookie; 
+    }
+    context.store.dispatch({
+        type: LOAD_MY_INFO_REQUEST,
+    })
+  
+    console.log('server side props end')
+    context.store.dispatch(END)
+    await context.store.sagaTask.toPromise();
+})
 
 export default Profile;

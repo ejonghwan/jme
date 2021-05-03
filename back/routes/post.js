@@ -301,5 +301,53 @@ router.post('/retweet/:postId', isLoggedIn, async (req, res, next) => {
 }) 
 
 
+router.get('/:postId', async (req, res, next) => {
+    try {
+        const post = await Post.findOne({
+            where: {id: req.params.postId}
+        })
+
+        if(!post) {
+            res.status(403).send('게시물이 없습니다')
+        }
+
+        const fullPost = await Post.findOne({ //합쳐서 돌려주기
+            where: { id: post.id },
+            include: [{
+                model: Post, //리트윗한 게시물
+                as: 'Retweet', //리트윗한 게시물이 post.Retweet으로 담김
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname']
+                }, {
+                    model: Image,
+                }]
+            }, {
+                model: User,
+                attributes: ['id', 'nickname'],
+            }, {
+                model: Image,
+            }, {
+                model: Comment,
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname']
+                }]
+            }, {
+                model: User,
+                as: 'Likers',
+                attributes: ['id']
+            }]
+        }) 
+
+
+        res.status(200).json(fullPost)
+
+    } catch(error) {
+        console.error(error)
+        next(error)
+    }
+})
+
 
 module.exports = router;

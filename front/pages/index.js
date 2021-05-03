@@ -1,10 +1,11 @@
+
 import React, {useState, useEffect } from 'react';
 import Layout from '../components/Layout.js'
 import PostForm from '../components/PostForm.js'
 import PostCard from '../components/PostCard.js'
 
 import { useSelector, useDispatch } from 'react-redux'
-import { LOAD_POST_REQUEST } from '../reducers/post.js';
+import { LOAD_POSTS_REQUEST } from '../reducers/post.js';
 import { LOAD_MY_INFO_REQUEST } from '../reducers/user.js';
 
 import wrapper from '../store/configureStore'
@@ -25,13 +26,9 @@ const index = () => {
         // })
         // if(infiniteLimit) {
         //     dispatch({ 
-        //         type: LOAD_POST_REQUEST 
+        //         type: LOAD_POSTS_REQUEST 
         //     })
         // }
-
-        rr = axios.get('/user/me')
-        console.log(rr)
-        
     }, [])
 
     
@@ -47,7 +44,7 @@ const index = () => {
                 // console.log('^^')
                 const lastId = mainPosts[mainPosts.length - 1] && mainPosts[mainPosts.length - 1].id //지금 불러온 mainPosts안, 배열 마지막꺼 아이디
                 dispatch({ 
-                    type: LOAD_POST_REQUEST,
+                    type: LOAD_POSTS_REQUEST,
                     lastId: lastId,
                 })
             }
@@ -93,7 +90,7 @@ const index = () => {
 // 아래 코드가 화면을 그리기전에 프론트서버에서 먼저 실행됨 home=> 브라우저  getServerSideProps=>프론트서버
 // 리덕스에서 아래 dispatch를 스토어로 보내서 실행한 결과를 리듀서에 하이드레이트로 보내줌
 export const getServerSideProps = wrapper.getServerSideProps( async context => { // 브라우저 개입x 프론트서버o
-    console.log('context: ', context) //??어디에 찍히는거지
+    console.log('context: ', context.req) //
     
     const cookie = context.req ? context.req.headers.cookie : ''; //서버에서 실행되면 context.req안에 header가 들어있다     
     axios.defaults.headers.Cookie = '';
@@ -105,7 +102,7 @@ export const getServerSideProps = wrapper.getServerSideProps( async context => {
         type: LOAD_MY_INFO_REQUEST
     })
     context.store.dispatch({ 
-        type: LOAD_POST_REQUEST 
+        type: LOAD_POSTS_REQUEST 
     })
 
 
