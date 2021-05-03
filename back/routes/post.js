@@ -308,13 +308,13 @@ router.get('/:postId', async (req, res, next) => {
         })
 
         if(!post) {
-            res.status(403).send('게시물이 없습니다')
+            return res.status(403).json({asd: 'asda'})
         }
 
         const fullPost = await Post.findOne({ //합쳐서 돌려주기
             where: { id: post.id },
             include: [{
-                model: Post, //리트윗한 게시물
+                model: Post, 
                 as: 'Retweet', //리트윗한 게시물이 post.Retweet으로 담김
                 include: [{
                     model: User,
