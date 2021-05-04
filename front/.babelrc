@@ -1,0 +1,12 @@
+{
+    "preset": ["next/babel"],
+    "plugins": [
+        ["babel-plugin-styled-components", {
+            "ssr": true,
+            "displayName": true
+        }]
+    ]
+}
+
+
+// "babel-plugin-styled-components": "^1.12.0"

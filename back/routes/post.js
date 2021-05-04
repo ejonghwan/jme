@@ -306,7 +306,7 @@ router.get('/:postId', async (req, res, next) => {
         const post = await Post.findOne({
             where: {id: req.params.postId}
         })
-
+        // console.log('post gg: ', post) //post에는 dataValues  _previousDataValues 두개 값 담겨있음
         if(!post) {
             return res.status(403).json({asd: 'asda'})
         }

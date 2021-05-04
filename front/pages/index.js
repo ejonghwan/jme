@@ -86,11 +86,11 @@ const index = () => {
 */
 
 
-// cors 문제. 브라우저에서 쿠키를 보낼 때 서버에서 처리를 해줬는데 아래소스는 프론트서버에서 보내는거라 여기서도 처리를 해줘야함 
+// cors 문제. 브라우저에서 쿠키를 보낼 때 브라우저는 자동으로 보내줘서 서버에서 처리를 해줬는데 아래소스는 프론트서버에서 보내는거라 여기서도 처리를 해줘야함 
 // 아래 코드가 화면을 그리기전에 프론트서버에서 먼저 실행됨 home=> 브라우저  getServerSideProps=>프론트서버
 // 리덕스에서 아래 dispatch를 스토어로 보내서 실행한 결과를 리듀서에 하이드레이트로 보내줌
 export const getServerSideProps = wrapper.getServerSideProps( async context => { // 브라우저 개입x 프론트서버o
-    console.log('context: ', context.req) //
+    // console.log('context: ', context.req) //
     
     const cookie = context.req ? context.req.headers.cookie : ''; //서버에서 실행되면 context.req안에 header가 들어있다     
     axios.defaults.headers.Cookie = '';
