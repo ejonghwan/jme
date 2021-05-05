@@ -1,5 +1,5 @@
 
-import { all, call, delay, fork, put, takeLatest } from "@redux-saga/core/effects";
+import { all, call, delay, fork, put, takeLatest, throttle } from "@redux-saga/core/effects";
 import axios from 'axios'
 
 import {
@@ -11,7 +11,7 @@ import {
     LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
     UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, 
     UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_SUCCESS,
-    RETWEET_REQUEST, RETWEET_FAILURE, RETWEET_SUCCESS, LOAD_POST_REQUEST, LOAD_POST_FAILURE, LOAD_POST_SUCCESS,
+    RETWEET_REQUEST, RETWEET_FAILURE, RETWEET_SUCCESS, LOAD_POST_REQUEST, LOAD_POST_FAILURE, LOAD_POST_SUCCESS, LOAD_USER_POSTS_REQUEST, LOAD_USER_POSTS_FAILURE, LOAD_USER_POSTS_SUCCESS,
     
 } from '../reducers/post'
 
@@ -90,7 +90,7 @@ function addCommentAPI(data) {
 function* addComment(action) {
     // yield delay(1000)
     try {
-        console.log('asdasdasd!!!!!', action.data)
+        // console.log('asdasdasd!!!!!', action.data)
         const result = yield call(addCommentAPI, action.data) 
         yield put({
             type: ADD_COMMENT_SUCCESS,
@@ -228,6 +228,27 @@ function* loadpost(action) {
 }
 
 
+function loaduserpostsAPI(data, lastId) {
+    return axios.get(`/post/${data}/posts?lastId=${lastId || 0}`)
+}
+
+function* loaduserposts(action) {
+    // console.log('??????', action)
+    try {
+        const result = yield call(loaduserpostsAPI, action.data, action.lastId)
+        yield put({
+            type: LOAD_USER_POSTS_SUCCESS,
+            data: result.data,
+        })
+    } catch(err) {
+        console.error(err)
+        yield put({
+            type: LOAD_USER_POSTS_FAILURE,
+            error: err.response.data,
+        })
+    }
+    
+}
 
 
 function* watchAddPost() {
@@ -266,6 +287,10 @@ function* watchLoadpost() {
     yield takeLatest(LOAD_POST_REQUEST, loadpost)
 }
 
+function* watchLoaduserposts() {
+    yield throttle(5000, LOAD_USER_POSTS_REQUEST, loaduserposts)
+}
+
 export default function* postSaga() {
     yield all([
         fork(watchAddPost),
@@ -278,5 +303,6 @@ export default function* postSaga() {
         fork(watchRetweet),
         fork(watchRetweet),
         fork(watchLoadpost),
+        fork(watchLoaduserposts),
     ])
 }

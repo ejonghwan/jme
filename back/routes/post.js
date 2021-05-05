@@ -6,6 +6,7 @@ const path = require('path') //node에서 지원
 const { Post, User, Image, Comment, Hashtag } = require('../models');
 const { isLoggedIn } = require('./middlewares')
 
+const { Op } = require('sequelize')
 
 
 // 멀터는 어떤곳은 한장 어떤곳은 여러장 올릴 수 있으니 각 라우터마다 셋팅을 따로 해줌
@@ -349,5 +350,53 @@ router.get('/:postId', async (req, res, next) => {
     }
 })
 
+
+router.get('/:userId/posts', async (req, res, next) => {
+    try {
+
+        const where = { UserId: req.params.userId } // Post model에는 누가쓴건지 UserId가 있음
+        const lastId = parseInt(req.query.lastId, 10)
+        if(lastId) {
+            where.id = { [Op.lt]: lastId}
+        }
+        const posts = await Post.findAll({
+            where: where,
+            limit: 10,
+            order: [['createdAt', 'DESC']],
+            include: [{
+                model: User,
+                attributes: ['id', 'password'] 
+            }, {
+                model: Image,
+            }, {
+                model: Comment,
+                include: [{
+                    model: User,
+                    attributes: ['id', 'password'],
+                    order: [['createdAt', 'DESC']]
+                }]
+            }, {
+                model: User,
+                as: 'Likers',
+                attributes: ['id'],
+            }, {
+                model: Post,
+                as: 'Retweet',
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname']
+                }, {
+                    model: Image,
+                }]
+            }]
+        })
+
+        res.status(200).json(posts)
+
+    } catch(error) {
+        console.error(error);
+        next(error);
+    }
+})
 
 module.exports = router;

@@ -35,7 +35,10 @@ export const initialState = {
     retweetLoading: false,
     retweetDone: false,
     retweetError: null,
-    
+    loadUserPostsLoading: false,
+    loadUserPostsDone: false,
+    loadUserPostsError: null,
+    postInfo: [],
 }
 
 
@@ -112,6 +115,10 @@ export const initialState = {
 //     },
 // })
 
+export const LOAD_USER_POSTS_REQUEST = "LOAD_USER_POSTS_REQUEST"
+export const LOAD_USER_POSTS_SUCCESS = "LOAD_USER_POSTS_SUCCESS"
+export const LOAD_USER_POSTS_FAILURE = "LOAD_USER_POSTS_FAILURE"
+
 export const ADD_POST_REQUEST = "ADD_POST_REQUEST"
 export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS"
 export const ADD_POST_FAILURE = "ADD_POST_FAILURE"
@@ -178,6 +185,28 @@ const reducer = (state = initialState, action) => {
                 draft.imagePaths = draft.imagePaths.filter((val, idx) => idx !== action.data)
                 break
             }
+
+            case LOAD_USER_POSTS_REQUEST: {
+                draft.loadUserPostsLoading = true;
+                draft.loadUserPostsDone = false;
+                draft.loadUserPostsError = null;
+                break
+             }
+ 
+             case LOAD_USER_POSTS_SUCCESS: {
+                 draft.mainPosts = draft.mainPosts.concat(action.data);
+                 draft.postInfo = action.data;
+                 draft.loadUserPostsLoading = false;
+                 draft.loadUserPostsDone = true;
+                 draft.infiniteLimit = action.data.length === 10
+                 break
+              }
+ 
+              case LOAD_USER_POSTS_FAILURE: {
+                 draft.loadUserPostsLoading = false;
+                 draft.loadUserPostsError = action.error;
+                 break
+              }
 
             case ADD_POST_REQUEST: {
                draft.addPostLoading = true;

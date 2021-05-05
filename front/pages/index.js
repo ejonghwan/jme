@@ -38,9 +38,9 @@ const index = () => {
         // 스크롤 전체값 -500 < 현재 화면의 스크롤 탑값 + 현재 화면의 높이값 
         function infiniteScroll() {
             let bodyHeight = document.body.clientHeight;
-            let currentVal = window.pageYOffset;
+            let currentHeight = window.pageYOffset;
             let windowHeight = window.innerHeight;
-            if(bodyHeight - 100 < currentVal + windowHeight && infiniteLimit && !loadPostLoading) {
+            if(bodyHeight - 100 < currentHeight + windowHeight && infiniteLimit && !loadPostLoading) {
                 // console.log('^^')
                 const lastId = mainPosts[mainPosts.length - 1] && mainPosts[mainPosts.length - 1].id //지금 불러온 mainPosts안, 배열 마지막꺼 아이디
                 dispatch({ 

@@ -8,28 +8,26 @@ export default class MyDocument extends Document {
     static async getInitialProps(ctx) {
         const sheet = new ServerStyleSheet();
         const originalRenderPage = ctx.renderPage;
-
         try {
-            ctx.renderPage = () => originalRenderPage({
-                enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />),
-            })
-            const initialProps = await Document.getInitialProps(ctx)
-            return {
-                ...initialProps,
-                styles: (
-                    <>
-                        {initialProps.styles}
-                        {sheet.getStyleElement()}
-                    </>
-                ),
-            };
-        } catch(error) {
-            console.error(error);
+          ctx.renderPage = () => originalRenderPage({
+            enhanceApp: App => props => sheet.collectStyles(<App {...props} />),
+          });
+          const initialProps = await Document.getInitialProps(ctx);
+          return {
+            ...initialProps,
+            styles: (
+              <>
+                {initialProps.styles}
+                {sheet.getStyleElement()}
+              </>
+            ),
+          };
+        } catch (error) {
+          console.error(error);
         } finally {
-            sheet.seal();
-        };
-
-    };
+          sheet.seal();
+        }
+      }
 
     // 아래가 기본꼴. _app.js 위에 _document.js가 있고 여기에 ssr하면 됨. 여기에서 html head body 수정가능
     // https://polyfill.io/  에서 폴리필 체크해서 복사하고 NextScript 얘보다 위에 폴리필 등록
