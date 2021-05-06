@@ -5,6 +5,7 @@ import { SIGNUP_REQUEST, LOAD_MY_INFO_REQUEST } from '../reducers/user.js';
 
 import { useDispatch, useSelector } from 'react-redux'
 import Router from 'next/router'
+import axios from 'axios'
 
 import { END } from 'redux-saga'
 import wrapper from '../store/configureStore'

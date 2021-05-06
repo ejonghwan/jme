@@ -7,12 +7,13 @@ import FollowButton from './FollowButton.js'
 import PostCardContent from './PostCardContent.js'
 import { removePost } from '../reducers/post'
 import { LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post'
-
+import { useRouter } from 'next/router'
 
 
 const PostCard = ({ data }) => {
     // console.log(data.Images[0])
 
+    const router = useRouter()
     const dispatch = useDispatch()
 
     const { me } = useSelector(state => state.user )
@@ -63,6 +64,11 @@ const PostCard = ({ data }) => {
         })
     }, [id])
 
+    const onTagetClick = (data) => () => {
+        console.log(data)
+        // router.push(`http://localhost:3060/user/${data}`)
+
+    }
 
     // useEffect(() => { 반복문안에 이걸 넣으면 .....글만큼 리랜더링됨
     //     if(retweetError) { alert('자신의 글은 리트윗 할 수 없습니다.') }
@@ -70,7 +76,7 @@ const PostCard = ({ data }) => {
     
 
     return (
-        <div>
+        <div onClick={onTagetClick(data.User.id)}>
             {data.RetweetId && data.Retweet ? (
                 <div style={{backgroundColor: "#ddd"}}>
                     {data.User.nickname}님이 리트윗했습니다<br />

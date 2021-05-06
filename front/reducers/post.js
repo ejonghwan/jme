@@ -38,7 +38,6 @@ export const initialState = {
     loadUserPostsLoading: false,
     loadUserPostsDone: false,
     loadUserPostsError: null,
-    postInfo: [],
 }
 
 
@@ -195,7 +194,6 @@ const reducer = (state = initialState, action) => {
  
              case LOAD_USER_POSTS_SUCCESS: {
                  draft.mainPosts = draft.mainPosts.concat(action.data);
-                 draft.postInfo = action.data;
                  draft.loadUserPostsLoading = false;
                  draft.loadUserPostsDone = true;
                  draft.infiniteLimit = action.data.length === 10

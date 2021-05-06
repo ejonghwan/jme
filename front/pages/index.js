@@ -33,7 +33,6 @@ const index = () => {
 
     
 
-
     useEffect(() => {
         // 스크롤 전체값 -500 < 현재 화면의 스크롤 탑값 + 현재 화면의 높이값 
         function infiniteScroll() {
@@ -71,7 +70,10 @@ const index = () => {
                 {loginLoading || logoutLoading? (
                     <div>...loading</div>
                 ) : (
-                    mainPosts.map(data => <PostCard key={data.id} data={data}/>)
+                    <div>
+                    {mainPosts.map(data => <PostCard key={data.id} data={data} />)}
+                    {console.log('asd')}
+                    </div>
                 )}
             </Layout>
         </div>

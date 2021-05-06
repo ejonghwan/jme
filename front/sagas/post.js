@@ -228,8 +228,32 @@ function* loadpost(action) {
 }
 
 
+// test
+// function loaduserpostsAPI(data, lastId) {
+//     return axios.get(`/post/${data}/posts?lastId=${lastId || 0}`)
+// }
+
+// function* loaduserposts(action) {
+//     // console.log('??????', action)
+//     try {
+//         const result = yield call(loaduserpostsAPI, action.data, action.lastId)
+//         yield put({
+//             type: LOAD_USER_POSTS_SUCCESS,
+//             data: result.data,
+//         })
+//     } catch(err) {
+//         console.error(err)
+//         yield put({
+//             type: LOAD_USER_POSTS_FAILURE,
+//             error: err.response.data,
+//         })
+//     }
+    
+// }
+
+// post saga에서 user 라우트에 요청
 function loaduserpostsAPI(data, lastId) {
-    return axios.get(`/post/${data}/posts?lastId=${lastId || 0}`)
+    return axios.get(`/user/${data}/posts?lastId=${lastId || 0}`)
 }
 
 function* loaduserposts(action) {
@@ -247,8 +271,8 @@ function* loaduserposts(action) {
             error: err.response.data,
         })
     }
-    
 }
+
 
 
 function* watchAddPost() {

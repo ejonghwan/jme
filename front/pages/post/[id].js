@@ -21,10 +21,10 @@ const PostId = () => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        // dispatch({
-        //     type: LOAD_POST_REQUEST,
-        //     data: id,
-        // })
+        dispatch({
+            type: LOAD_POST_REQUEST,
+            data: id,
+        })
         console.log('asd: ', singlePost)
     }, [])
     
@@ -66,7 +66,7 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
         axios.defaults.headers.Cookie = cookie; //백엔드에 쿠키전달
     }
 
-    console.log('쿠킹:', axios.defaults.headers.Cookie)
+    // console.log('쿠킹:', axios.defaults.headers.Cookie)
 
     context.store.dispatch({
         type: LOAD_MY_INFO_REQUEST,
@@ -76,6 +76,7 @@ export const getServerSideProps = wrapper.getServerSideProps(async (context) => 
         type: LOAD_POST_REQUEST,
         data: context.params.id,  //context.params.id 하거나 context.query.id 하면 [id]에 접근가능
     })
+    
   
     console.log('server side props end')
     context.store.dispatch(END)

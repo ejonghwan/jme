@@ -246,25 +246,7 @@ function* loaduserinfo(action) {
     }
 }
 
-// function loadUserAPI(data) {
-//     return axios.get(`/user/${data}`);
-//   }
-  
-//   function* loaduserinfo(action) {
-//     try {
-//       const result = yield call(loadUserAPI, action.data);
-//       yield put({
-//         type: LOAD_USER_SUCCESS,
-//         data: result.data,
-//       });
-//     } catch (err) {
-//       console.error(err);
-//       yield put({
-//         type: LOAD_USER_FAILURE,
-//         error: err.response.data,
-//       });
-//     }
-//   }
+
 
 
 

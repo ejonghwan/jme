@@ -309,7 +309,7 @@ router.get('/:postId', async (req, res, next) => {
         })
         // console.log('post gg: ', post) //post에는 dataValues  _previousDataValues 두개 값 담겨있음
         if(!post) {
-            return res.status(403).json({asd: 'asda'})
+            return res.status(403).send('게시글이 없습니다')
         }
 
         const fullPost = await Post.findOne({ //합쳐서 돌려주기
@@ -351,52 +351,103 @@ router.get('/:postId', async (req, res, next) => {
 })
 
 
-router.get('/:userId/posts', async (req, res, next) => {
-    try {
+// 잘못적음 -- posts saga에서 user로 요청한걸....
+// router.get('/:userId/posts', async (req, res, next) => { //post/3/posts
+//     try {
 
-        const where = { UserId: req.params.userId } // Post model에는 누가쓴건지 UserId가 있음
-        const lastId = parseInt(req.query.lastId, 10)
-        if(lastId) {
-            where.id = { [Op.lt]: lastId}
-        }
-        const posts = await Post.findAll({
-            where: where,
-            limit: 10,
-            order: [['createdAt', 'DESC']],
-            include: [{
-                model: User,
-                attributes: ['id', 'password'] 
-            }, {
-                model: Image,
-            }, {
-                model: Comment,
-                include: [{
-                    model: User,
-                    attributes: ['id', 'password'],
-                    order: [['createdAt', 'DESC']]
-                }]
-            }, {
-                model: User,
-                as: 'Likers',
-                attributes: ['id'],
-            }, {
-                model: Post,
-                as: 'Retweet',
-                include: [{
-                    model: User,
-                    attributes: ['id', 'nickname']
-                }, {
-                    model: Image,
-                }]
-            }]
-        })
+//         const where = { UserId: req.params.userId } // Post model에는 누가쓴건지 UserId가 있음
+//         const lastId = parseInt(req.query.lastId, 10)
+//         if(lastId) {
+//             where.id = { [Op.lt]: lastId}
+//         }
+//         const posts = await Post.findAll({
+//             where: where,
+//             limit: 10,
+//             order: [['createdAt', 'DESC']],
+//             include: [{
+//                 model: User,
+//                 attributes: ['id', 'password']  //근데 여기에서 'id', 'nickname' 하면 되는데 id나 password하면 안되는 이유가 ..?
+//             }, {
+//                 model: Image,
+//             }, {
+//                 model: Comment,
+//                 include: [{
+//                     model: User,
+//                     attributes: ['id', 'password'],
+//                 }]
+//             }, {
+//                 model: User,
+//                 as: 'Likers',
+//                 attributes: ['id'],
+//             }, {
+//                 model: Post,
+//                 as: 'Retweet',
+//                 include: [{
+//                     model: User,
+//                     attributes: ['id', 'nickname']
+//                 }, {
+//                     model: Image,
+//                 }]
+//             }]
+//         })
 
-        res.status(200).json(posts)
+//         res.status(200).json(posts)
 
-    } catch(error) {
-        console.error(error);
-        next(error);
-    }
-})
+//     } catch(error) {
+//         console.error(error);
+//         next(error);
+//     }
+
+
+//         // try {
+//         //     const where = { UserId: req.params.userId } 
+//         //     const lastId = parseInt(req.query.lastId, 10); 
+//         //     if(lastId) { 
+//         //         where.id = { [Op.lt]: lastId } 
+//         //         //21 20 19 18 17 16 15 14 13 12(lastId) 12가 라스트 아이디면 11부터 -> 11 10 9 8 7 6 5 4 3 2 1
+//         //     }
+
+//         //     const posts = await Post.findAll({ 
+//         //         where: where,
+//         //         limit: 10, 
+                
+//         //         order: [
+//         //             ['createdAt', 'DESC'],
+//         //             [Comment, 'createdAt', 'DESC']
+//         //         ], // DESC 내림차순, ASC 오름차순
+                
+//         //         include: [{
+//         //             model: User,
+//         //             attributes: { exclude: ['password'] },
+//         //         }, {
+//         //             model: Image,
+//         //         }, {
+//         //             model: Comment,
+//         //             include: [{
+//         //                     model: User,
+//         //                     attributes: ['id', 'nickname']
+//         //                 }]
+//         //         }, {
+//         //             model: User, 
+//         //             as: 'Likers',
+//         //             attributes: ['id'],
+//         //         },{
+//         //             model: Post, //리트윗한 게시물
+//         //             as: 'Retweet',
+//         //             include: [{
+//         //                 model: User,
+//         //                 attributes: ['id', 'nickname']
+//         //             }, {
+//         //                 model: Image,
+//         //             }]
+//         //         },]
+//         //     })
+//         //     // console.log(posts)
+//         //     res.status(200).json(posts)
+//         // } catch (error) {
+//         //     console.error(error)
+//         //     next(error)
+//         // }
+//     })
 
 module.exports = router;

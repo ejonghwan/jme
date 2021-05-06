@@ -1,5 +1,5 @@
 const express = require('express');
-const { User, Post } = require('../models') //module에 만든 User db
+const { User, Post, Comment, Image } = require('../models') //module에 만든 User db
 const bcrypt = require('bcrypt');
 // const post = require('../models/post');
 const router = express.Router()
@@ -274,19 +274,12 @@ router.delete('/:userId/removefollow', async (req, res, next) => {
 })
 
 
-
-router.get('/:userId', async (req, res, next) => {
+//about static
+router.get('/:userId', async (req, res, next) => { //user/3
     try {
-        const user = await User.findOne({
-            where: { id: req.params.userId }
-        })
-
-        if(!user) {
-            res.status(403).send('유저가 없습니다')
-        }
-
+        
         const fullUser = await User.findOne({
-            where: { id: user.id },
+            where: { id: req.params.userId },
             attributes: { exclude: ['password'] },
                 include: [{ 
                     model: Post, 
@@ -300,6 +293,10 @@ router.get('/:userId', async (req, res, next) => {
                     attributes: { exclude: ['password', 'email'] },
                 }]
         })
+
+        if(!fullUser) {
+            res.status(403).send('유저가 없습니다')
+        }
 
         if(fullUser) {
             const data = fullUser.toJSON() //sequelize에서 받아온 데이터는 쓰려면 json으로 한번 변경해줘야함
@@ -315,6 +312,64 @@ router.get('/:userId', async (req, res, next) => {
         next(error);
     }
 })
+
+
+router.get('/:userId/posts', async (req, res, next) => { //posts
+
+    try {
+        const where = { UserId: req.params.userId } 
+        const lastId = parseInt(req.query.lastId, 10); 
+        if(lastId) { 
+            where.id = { [Op.lt]: lastId } 
+            //21 20 19 18 17 16 15 14 13 12(lastId) 12가 라스트 아이디면 11부터 -> 11 10 9 8 7 6 5 4 3 2 1
+        }
+
+        const posts = await Post.findAll({ 
+            where: where,
+            limit: 10, 
+           
+            order: [
+                ['createdAt', 'DESC'],
+                [Comment, 'createdAt', 'DESC']
+            ], // DESC 내림차순, ASC 오름차순
+           
+            include: [{
+                model: User,
+                // attributes: { exclude: ['password'] },
+                attributes: ['id', 'password', 'nickname'], //id만 가져오거나 id / password만 가져오면 에러남  <- 이게 아님 _document.js 오타있던거
+            }, {
+                model: Image,
+            }, {
+                model: Comment,
+                include: [{
+                        model: User,
+                        attributes: ['id']
+                    }]
+            }, {
+                model: User, 
+                as: 'Likers',
+                attributes: ['id'],
+            },{
+                model: Post, //리트윗한 게시물
+                as: 'Retweet',
+                include: [{
+                    model: User,
+                    attributes: ['id', 'nickname']
+                }, {
+                    model: Image,
+                }]
+            },]
+        })
+        // console.log(posts)
+        res.status(200).json(posts)
+    } catch (error) {
+        console.error(error)
+        next(error)
+    }
+    
+    
+})
+
 
 
 
