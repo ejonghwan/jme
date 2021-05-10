@@ -42,8 +42,7 @@ const Hashtag = () => {
         <div>
            {mainPosts ? (
                 <>
-                    {/* nickanme: {mainPosts.User.nickname} <br /> */}
-                    {/* content: {mainPosts.content} <br />  */}
+                    {mainPosts.map(val => <div>nickname: {val.User.nickname}</div>)}
                 </>
             ) : (
                 <div>유저가 없습니다</div>
