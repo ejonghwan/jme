@@ -23,6 +23,7 @@ const express = require('express')
 const postRouter = require('./routes/post')
 const userRouter = require('./routes/user')
 const postsRouter = require('./routes/posts')
+const hashtagRouter = require('./routes/hashtag')
 const db = require('./models')
 const app = express()
 const cors = require('cors')
@@ -109,6 +110,7 @@ qs모듈이란 ? 뒤에오는 저부분을 req.query에 저장시키는 역할
 app.use('/post', postRouter)
 app.use('/posts', postsRouter)
 app.use('/user', userRouter)
+app.use('/hashtag', hashtagRouter)
 
 
 

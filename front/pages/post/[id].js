@@ -21,10 +21,10 @@ const PostId = () => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch({
-            type: LOAD_POST_REQUEST,
-            data: id,
-        })
+        // dispatch({
+        //     type: LOAD_POST_REQUEST,
+        //     data: id,
+        // })
         console.log('asd: ', singlePost)
     }, [])
     

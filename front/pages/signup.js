@@ -46,13 +46,13 @@ const Signup = () => {
 
     useEffect(() => {
         if(me && me.id) {
-             Router.replace('/') //replace는 뒤로가기도 안됨 
+            //  Router.replace('/') //replace는 뒤로가기도 안됨 
         }
      }, [me && me.id])
 
     useEffect(() => {
        if(signupDone) {
-            Router.replace('/')
+            // Router.replace('/')
        }
     }, [signupDone])
 

@@ -11,7 +11,7 @@ import {
     LIKE_POST_REQUEST, LIKE_POST_SUCCESS, LIKE_POST_FAILURE,
     UNLIKE_POST_REQUEST, UNLIKE_POST_SUCCESS, UNLIKE_POST_FAILURE, 
     UPLOAD_IMAGES_REQUEST, UPLOAD_IMAGES_FAILURE, UPLOAD_IMAGES_SUCCESS,
-    RETWEET_REQUEST, RETWEET_FAILURE, RETWEET_SUCCESS, LOAD_POST_REQUEST, LOAD_POST_FAILURE, LOAD_POST_SUCCESS, LOAD_USER_POSTS_REQUEST, LOAD_USER_POSTS_FAILURE, LOAD_USER_POSTS_SUCCESS,
+    RETWEET_REQUEST, RETWEET_FAILURE, RETWEET_SUCCESS, LOAD_POST_REQUEST, LOAD_POST_FAILURE, LOAD_POST_SUCCESS, LOAD_USER_POSTS_REQUEST, LOAD_USER_POSTS_FAILURE, LOAD_USER_POSTS_SUCCESS, LOAD_HASHTAG_REQUEST, LOAD_HASHTAG_FAILURE, LOAD_HASHTAG_SUCCESS,
     
 } from '../reducers/post'
 
@@ -273,6 +273,26 @@ function* loaduserposts(action) {
     }
 }
 
+function loadhashtagAPI(data, lastId) {
+    return axios.get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`)
+}
+
+function* loadhashtag(action) {
+    try {
+        const result = yield call(loadhashtagAPI, action.data, action.lastId)
+        yield put({
+            type: LOAD_HASHTAG_SUCCESS,
+            data: result.data,
+        })
+
+    } catch(err) {
+        console.error(err)
+        yield put({
+            type: LOAD_HASHTAG_FAILURE,
+            error: err.response.data,
+        })
+    }
+}
 
 
 function* watchAddPost() {
@@ -315,6 +335,10 @@ function* watchLoaduserposts() {
     yield throttle(5000, LOAD_USER_POSTS_REQUEST, loaduserposts)
 }
 
+function* watchLoadHashtag() {
+    yield takeLatest(LOAD_HASHTAG_REQUEST, loadhashtag)
+}
+
 export default function* postSaga() {
     yield all([
         fork(watchAddPost),
@@ -328,5 +352,6 @@ export default function* postSaga() {
         fork(watchRetweet),
         fork(watchLoadpost),
         fork(watchLoaduserposts),
+        fork(watchLoadHashtag)
     ])
 }

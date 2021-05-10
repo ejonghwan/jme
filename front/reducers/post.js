@@ -38,6 +38,9 @@ export const initialState = {
     loadUserPostsLoading: false,
     loadUserPostsDone: false,
     loadUserPostsError: null,
+    loadHashtagLoading: false,
+    loadHashtagDone: false,
+    loadHashtagError: null,
 }
 
 
@@ -134,6 +137,10 @@ export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST"
 export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS"
 export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE"
 
+export const LOAD_HASHTAG_REQUEST = "LOAD_HASHTAG_REQUEST"
+export const LOAD_HASHTAG_SUCCESS = "LOAD_HASHTAG_SUCCESS"
+export const LOAD_HASHTAG_FAILURE = "LOAD_HASHTAG_FAILURE"
+
 export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST"
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS"
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE"
@@ -184,6 +191,27 @@ const reducer = (state = initialState, action) => {
                 draft.imagePaths = draft.imagePaths.filter((val, idx) => idx !== action.data)
                 break
             }
+
+            case LOAD_HASHTAG_REQUEST: {
+                draft.loadHashtagLoading = true;
+                draft.loadHashtagDone = false;
+                draft.loadHashtagError = null;
+                break
+             }
+ 
+             case LOAD_HASHTAG_SUCCESS: {
+                 draft.mainPosts = action.data;
+                 draft.loadHashtagLoading = false;
+                 draft.loadHashtagDone = true;
+                 draft.infiniteLimit = action.data.length === 10
+                 break
+              }
+ 
+              case LOAD_HASHTAG_FAILURE: {
+                 draft.loadHashtagLoading = false;
+                 draft.loadHashtagError = action.error;
+                 break
+              }
 
             case LOAD_USER_POSTS_REQUEST: {
                 draft.loadUserPostsLoading = true;
