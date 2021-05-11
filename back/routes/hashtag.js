@@ -20,6 +20,7 @@ router.get('/:hashtag', async (req, res, next) => { //posts
             where: where,
             limit: 10, 
            
+            
             order: [
                 ['createdAt', 'DESC'],
                 [Comment, 'createdAt', 'DESC']

@@ -11,6 +11,10 @@ const db = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 
+/*
+    매우중요 ! /user/:userId 인 애들은 아래쪽에 둬야한다  req.params 애들은 가끔 다른요청이랑 섞일수있음.
+*/
+
 // 새로고침 시 cookie 사용자 정보 복구
 router.get('/', async (req, res, next) => {
     console.log('cookie check: ', req.headers)
@@ -222,10 +226,11 @@ router.get('/followers', isLoggedIn, async (req, res, next) => {
         } 
 
         
-        const followers = await user.getFollowers()
+        const followers = await user.getFollowers({
+            limit: 3, //불러올 갯수
+        })
         // console.log(followers)
         res.status(200).json(followers)
-        // res.status(200).json([{id: 1}])
 
         
     } catch(error) {
@@ -248,7 +253,9 @@ router.get('/followings', isLoggedIn, async (req, res, next) => {
         if(!user) {
             return res.status(403).send('유저가 없습니다')
         } 
-        const followings = await user.getFollowings()
+        const followings = await user.getFollowings({
+            limit: 3, 
+        })
         res.status(200).json(followings)
 
         

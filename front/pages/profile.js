@@ -12,6 +12,9 @@ import axios from 'axios';
 import wrapper from '../store/configureStore';
 import { END } from 'redux-saga' 
 
+import useSWR from 'swr'; 
+const fetcher = (url) => axios.get(url, { withCredentials: true }).then((result) => result.data)
+
 const Profile = () => {
 
     // const followers = [{nick:'jj'}, {nick:'jj1'}, {nick:'jj2'}]
@@ -20,16 +23,21 @@ const Profile = () => {
     const dispatch = useDispatch()
     const { me } = useSelector(state => state.user)
     
+    //swr. useSWR훅스로 가져온 데이터가 data에 담김
+    const { data: followersData, error: followerError } = useSWR(`http://localhost:3065/user/followers`, fetcher)
+    const { data: followingsData, error: followingError } = useSWR(`http://localhost:3065/user/followings`, fetcher)
 
-    useEffect(() => {
-        dispatch({
-            type: LOAD_FOLLOWERS_REQUEST,
-        })
 
-        dispatch({
-            type: LOAD_FOLLOWINGS_REQUEST,
-        })
-    }, [])
+    // useEffect(() => { //swr로 변경
+    //     dispatch({
+    //         type: LOAD_FOLLOWERS_REQUEST,
+    //     })
+
+    //     dispatch({
+    //         type: LOAD_FOLLOWINGS_REQUEST,
+    //     })
+    // }, [])
+
 
     useEffect(() => {
         if(!(me)) {
@@ -43,16 +51,27 @@ const Profile = () => {
     //     }
     // }, [me && me.id])
 
+
     if(!me) {
-        return null;
+        return '내 정보 로딩...';
     };
+
+    // 중요 훅스는 훅스실행 횟수가 달라지면 오류를 뱉음. 리턴문은 훅스보다 위에 있을 수 없음
+    if(followerError || followingError) {
+        console.error(followerError || followingError)
+        return '팔로잉/팔로워 로딩 중 에러 발생'
+    }
+
+   
 
     return (
         <div>
             <Layout>
                 <NicknameEditForm />
-                <FollowList header="followings" data={me.Followings} />
-                <FollowList header="followers" data={me.Followers} />
+                {/* <FollowList header="followings" data={me.Followings} /> */}
+                {/* <FollowList header="followers" data={me.Followers} /> */}
+                <FollowList header="followings" data={followingsData} /> 
+                <FollowList header="followers" data={followersData} />
             </Layout>
         </div>
     );
