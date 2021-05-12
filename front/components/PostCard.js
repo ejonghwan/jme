@@ -8,7 +8,7 @@ import PostCardContent from './PostCardContent.js'
 import { removePost } from '../reducers/post'
 import { LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post'
 import { useRouter } from 'next/router'
-
+import Link from 'next/link'
 
 const PostCard = ({ data }) => {
     // console.log(data.Images[0])
@@ -83,7 +83,7 @@ const PostCard = ({ data }) => {
                     {data.Retweet.Images[0] && <ImageForm data={data.Retweet} />}
                     <FollowButton data={data.Retweet}/>
                     <div>{data.Retweet.User.nickname[0]}</div>
-                    <div>{data.Retweet.User.nickname}</div>
+                    <div><Link href={`/user/${data.User.id}`}><a>{data.Retweet.User.nickname}</a></Link></div>
                     <div>{<PostCardContent data={data.Retweet.content}/>}</div>
                     <button onClick={onRetweet}>리트윗</button>
                 </div>
@@ -92,7 +92,7 @@ const PostCard = ({ data }) => {
                     {data.Images[0] && <ImageForm data={data} />}
                     <FollowButton data={data}/>
                     <div>{data.User.nickname[0]}</div>
-                    <div>{data.User.nickname}</div>
+                    <div><Link href={`/user/${data.User.id}`}><a>{data.User.nickname}</a></Link></div>
                     <div>{<PostCardContent data={data.content}/>}</div>
                     <button onClick={onRetweet}>리트윗</button>
                 </div>

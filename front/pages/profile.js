@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {  useState ,useEffect, useCallback } from 'react';
 import Layout from '../components/Layout.js'
 import NicknameEditForm from '../components/NicknameEditForm.js'
 import FollowList from '../components/FollowList.js'
@@ -22,11 +22,20 @@ const Profile = () => {
 
     const dispatch = useDispatch()
     const { me } = useSelector(state => state.user)
+    const [ followersLimit, setFollowersLimit ] = useState(3)
+    const [ followingsLimit, setFollowingsLimit ] = useState(3)
     
     //swr. useSWR훅스로 가져온 데이터가 data에 담김
-    const { data: followersData, error: followerError } = useSWR(`http://localhost:3065/user/followers`, fetcher)
-    const { data: followingsData, error: followingError } = useSWR(`http://localhost:3065/user/followings`, fetcher)
+    const { data: followersData, error: followerError } = useSWR(`http://localhost:3065/user/followers?limit=${followersLimit}`, fetcher)
+    const { data: followingsData, error: followingError } = useSWR(`http://localhost:3065/user/followings?limit=${followingsLimit}`, fetcher)
 
+    const onFollowersViewmore = useCallback(() => {
+        setFollowersLimit(prev => prev + 3)
+    }, [])
+
+    const onFollowingsViewmore = useCallback(() => {
+        setFollowingsLimit(prev => prev + 3)
+    }, [])
 
     // useEffect(() => { //swr로 변경
     //     dispatch({
@@ -70,8 +79,8 @@ const Profile = () => {
                 <NicknameEditForm />
                 {/* <FollowList header="followings" data={me.Followings} /> */}
                 {/* <FollowList header="followers" data={me.Followers} /> */}
-                <FollowList header="followings" data={followingsData} /> 
-                <FollowList header="followers" data={followersData} />
+                <FollowList header="followings" data={followingsData} viewMore={onFollowingsViewmore} loading={!followingsData && !followingError} /> 
+                <FollowList header="followers" data={followersData} viewMore={onFollowersViewmore} loading={!followersData && !followerError} />
             </Layout>
         </div>
     );

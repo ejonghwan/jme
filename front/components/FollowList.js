@@ -1,9 +1,9 @@
 
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux'
 import { UNFOLLOW_REQUEST, REMOVE_FOLLOW_REQUEST } from '../reducers/user';
 
-const FollowingList = ({ header, data }) => {
+const FollowingList = ({ header, data, viewMore, loading }) => {
 
     const dispatch = useDispatch();
 
@@ -19,14 +19,15 @@ const FollowingList = ({ header, data }) => {
                 data,
             })
         }
-        
     }
+
+    
 
     return (
         <div>
             {header}<br />
             <div>
-                {data.map( item => {
+                {data && data.map( item => {
                     // console.log('item: ', item)
                     return (
                         <li>
@@ -37,7 +38,7 @@ const FollowingList = ({ header, data }) => {
                     )
                 })}
             </div>
-            <div>더보기</div>
+            <button type="button" onClick={viewMore}>더보기</button>
         </div>
     );
 };
