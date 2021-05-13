@@ -9,6 +9,9 @@ import { removePost } from '../reducers/post'
 import { LIKE_POST_REQUEST, UNLIKE_POST_REQUEST, RETWEET_REQUEST } from '../reducers/post'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import moment from 'moment'
+
+moment.locale('ko')
 
 const PostCard = ({ data }) => {
     // console.log(data.Images[0])
@@ -86,6 +89,7 @@ const PostCard = ({ data }) => {
                     <div><Link href={`/user/${data.User.id}`}><a>{data.Retweet.User.nickname}</a></Link></div>
                     <div>{<PostCardContent data={data.Retweet.content}/>}</div>
                     <button onClick={onRetweet}>리트윗</button>
+                    <div>{moment(data.createdAt).format('YYYY.MM.DD')}</div>
                 </div>
             ) : (
                 <div>
@@ -95,6 +99,7 @@ const PostCard = ({ data }) => {
                     <div><Link href={`/user/${data.User.id}`}><a>{data.User.nickname}</a></Link></div>
                     <div>{<PostCardContent data={data.content}/>}</div>
                     <button onClick={onRetweet}>리트윗</button>
+                    <div>{moment(data.createdAt).format('YYYY.MM.DD')}</div>
                 </div>
             )}
             {!like ? (
