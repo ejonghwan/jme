@@ -352,6 +352,6 @@ export default function* postSaga() {
         fork(watchRetweet),
         fork(watchLoadpost),
         fork(watchLoaduserposts),
-        fork(watchLoadHashtag),
+        fork(watchLoadHashtag)
     ])
 }
