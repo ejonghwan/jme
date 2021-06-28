@@ -296,47 +296,47 @@ function* loadhashtag(action) {
 
 
 function* watchAddPost() {
-    yield takeLatest(ADD_POST_REQUEST, addpost)
+    yield takeLatest(ADD_POST_REQUEST, addpost);
 }
 
 function* watchAddComment() {
-    yield takeLatest(ADD_COMMENT_REQUEST, addComment)
+    yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
 
 function* watchRemovePost() {
-    yield takeLatest(REMOVE_POST_REQUEST, removePost)
+    yield takeLatest(REMOVE_POST_REQUEST, removePost);
 }
 
 function* watchloadPosts() {
-    yield takeLatest(LOAD_POSTS_REQUEST, loadPosts)
+    yield takeLatest(LOAD_POSTS_REQUEST, loadPosts);
 }
 
 function* watchlikePost() {
-    yield takeLatest(LIKE_POST_REQUEST, likePost)
+    yield takeLatest(LIKE_POST_REQUEST, likePost);
 }
 
 function* watchunlikePost() {
-    yield takeLatest(UNLIKE_POST_REQUEST, unlikePost)
+    yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
 }
 
 function* watcUploadImages() {
-    yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages)
+    yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
 }
 
 function* watchRetweet() {
-    yield takeLatest(RETWEET_REQUEST, retweet)
+    yield takeLatest(RETWEET_REQUEST, retweet);
 }
 
 function* watchLoadpost() {
-    yield takeLatest(LOAD_POST_REQUEST, loadpost)
+    yield takeLatest(LOAD_POST_REQUEST, loadpost);
 }
 
 function* watchLoaduserposts() {
-    yield throttle(5000, LOAD_USER_POSTS_REQUEST, loaduserposts)
+    yield throttle(5000, LOAD_USER_POSTS_REQUEST, loaduserposts);
 }
 
 function* watchLoadHashtag() {
-    yield takeLatest(LOAD_HASHTAG_REQUEST, loadhashtag)
+    yield takeLatest(LOAD_HASHTAG_REQUEST, loadhashtag);
 }
 
 export default function* postSaga() {
